@@ -1,3 +1,0 @@
-before_script:
-    ssh-keyscan example.com >> /z/.ssh/known_hosts
-    chmod 644 /z/.ssh/known_hosts
