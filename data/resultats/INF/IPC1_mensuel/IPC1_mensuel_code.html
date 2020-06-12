@@ -1,0 +1,193 @@
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>library(rdbnomics)
+library(tidyverse)
+library(lubridate)
+
+time_start = Sys.time()
+
+IPC_data = rdbnomics::rdb_by_api_link(&quot;https://api.db.nomics.world/v22/series/INSEE/IPCH-2015?limit=1000&amp;offset=0&amp;q=&amp;observations=1&amp;align_periods=1&amp;dimensions=%7B%7D&quot;)
+
+list_NATURE = IPC_data %&gt;% distinct(NATURE)
+list_CORRECTION = IPC_data %&gt;% distinct(CORRECTION)
+list_INDICATEUR = IPC_data %&gt;% distinct(INDICATEUR)
+list_BASIND = IPC_data %&gt;% distinct(BASIND)
+list_ipc_global_coicop = IPC_data %&gt;%  distinct(COICOP2016)
+
+IPC = IPC_data %&gt;% 
+  dplyr::rename(freq = `@frequency`) %&gt;% 
+  dplyr::filter(freq == &quot;monthly&quot;) %&gt;% 
+  dplyr::filter(NATURE == &quot;INDICE&quot;) %&gt;% 
+  dplyr::filter(nchar(COICOP2016) &lt;= 3) %&gt;% 
+  drop_na() %&gt;% 
+  arrange(period) %&gt;% 
+  mutate(month = month(period)) %&gt;% 
+  group_by(COICOP2016) %&gt;% 
+  mutate(IPC_growth_mensuel = 100 * (value/dplyr::lag(value)-1)) %&gt;% 
+  group_by(COICOP2016, month) %&gt;% 
+  mutate(IPC_growth_annuel = 100 * (value/dplyr::lag(value)-1)) %&gt;% 
+  filter(period &gt;= &quot;2015-01-01&quot;) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(title = substr(`COICOP classification, 2016`, 1, 52))
+
+last_values = IPC %&gt;% 
+  group_by(COICOP2016) %&gt;% 
+  filter(period == max(period)) %&gt;% 
+  select(period, IPC_growth_mensuel, IPC_growth_annuel, COICOP2016) %&gt;% 
+  mutate(sign_mensuel = case_when(IPC_growth_mensuel &gt;= 0 ~ &quot;+&quot;,
+                                  TRUE ~ &quot;&quot;)) %&gt;% 
+  mutate(sign_annuel = case_when(IPC_growth_annuel &gt;= 0 ~ &quot;+&quot;,
+                                  TRUE ~ &quot;&quot;)) %&gt;% 
+  mutate(growth_mensuel = paste0(sign_mensuel, round(IPC_growth_mensuel, 1), &quot;%&quot;)) %&gt;% 
+  mutate(growth_annuel = paste0(sign_annuel, round(IPC_growth_annuel, 1), &quot;%&quot;)) %&gt;% 
+  select(COICOP2016, growth_mensuel, growth_annuel)
+
+IPC_ = IPC %&gt;%
+  left_join(last_values, by = &quot;COICOP2016&quot;) %&gt;% 
+  mutate(title_annuel = substr(paste(growth_annuel, &quot; - &quot;, title), 1, 52)) %&gt;% 
+  mutate(title_mensuel = substr(paste(growth_mensuel, &quot; - &quot;, title), 1, 52))
+
+list_ipc_coicop = IPC %&gt;% distinct(COICOP2016)
+
+ncoicop = nrow(list_ipc_coicop)
+nplot = 12
+
+list_seq = lapply(1:100, function(x){
+  if(x == 1){
+    return(1:nplot)
+    }else{
+    return(((x-1)*nplot+1):(x*nplot))
+  }
+})
+
+i = 1
+while(!(ncoicop %in% list_seq[[i]])){
+  i = i + 1
+}
+
+for(j in 1:i){
+  list_coicop_selected = 
+    list_ipc_coicop %&gt;% 
+    ungroup() %&gt;% 
+    dplyr::slice(list_seq[[j]]) %&gt;%
+    pull(COICOP2016)
+  
+  df = IPC_ %&gt;%
+    filter(COICOP2016 %in% list_coicop_selected)
+  
+  df_order  = df %&gt;% 
+    mutate(COICOP2016 = factor(COICOP2016, levels = list_coicop_selected)) %&gt;% 
+    arrange(COICOP2016) 
+  
+  order_title_annuel = df_order %&gt;% 
+    pull(title_annuel) %&gt;% 
+    unique()
+  
+  order_title_mensuel = df_order %&gt;% 
+    pull(title_mensuel) %&gt;% 
+    unique()
+  
+  df = df %&gt;% 
+    mutate(title_mensuel = factor(title_mensuel, levels = order_title_mensuel)) %&gt;% 
+    mutate(title_annuel = factor(title_annuel, levels = order_title_annuel))
+  
+  assign(paste0(&quot;IPC&quot;, j), df)
+}
+
+# rm(list = ls(pattern = &quot;^IPC[0-9][0-9]$&quot;))
+
+list_df = ls(pattern = &quot;^IPC[0-9]$&quot;)
+
+time_now = with_tz(now(), &quot;Europe/Paris&quot;)
+source_ = paste(&quot;Source : INSEE, &quot;, sprintf(&quot;Fait le : %s&quot;, time_now))
+
+
+for(df_id in list_df){
+  
+  df = get(df_id)
+  
+  title = paste(&quot;Glissement mensuel&quot;, df_id)
+  
+  gg_IPC = 
+    ggplot(df, aes(x = period, y = IPC_growth_mensuel)) +
+    geom_bar(stat = &quot;identity&quot;, position = &quot;stack&quot;) +
+    facet_wrap(~title_mensuel, scales = &quot;free&quot;) +
+    ggtitle(title) +
+    labs(subtitle = source_)
+  
+  assign(paste0(&quot;gg_&quot;, df_id, &quot;_mensuel&quot;), gg_IPC)
+}
+
+for(df_id in list_df){
+  
+  df = get(df_id)
+  
+  title = paste(&quot;Glissement annuel&quot;, df_id)
+  
+  gg_IPC = 
+    ggplot(df, aes(x = period, y = IPC_growth_annuel)) +
+    geom_bar(stat = &quot;identity&quot;, position = &quot;stack&quot;) +
+    facet_wrap(~title_annuel, scales = &quot;free&quot;) +
+    ggtitle(title) +
+    labs(subtitle = source_)
+  
+  assign(paste0(&quot;gg_&quot;, df_id, &quot;_annuel&quot;), gg_IPC)
+}
+
+time_end = Sys.time()
+run_time = as.numeric(difftime(time_end, time_start, units = &quot;secs&quot;))
+
+list_df_mensuel = paste0(list_df, &quot;_mensuel&quot;)
+list_gg_mensuel = paste0(&quot;gg_&quot;, list_df_mensuel)
+
+list_df_annuel = paste0(list_df, &quot;_annuel&quot;)
+list_gg_annuel = paste0(&quot;gg_&quot;, list_df_annuel)
+
+for(i in 1:length(list_df_mensuel)){
+  
+  gg = get(list_gg_mensuel[i])
+  
+  export_graph(gg,
+               update = TRUE,
+               run_time = run_time,
+               create_code_html = TRUE,
+               folder_name = list_df_mensuel[i],
+               perim = &quot;INF&quot;)
+}
+
+for(i in 1:length(list_df_annuel)){
+  
+  gg = get(list_gg_annsuel[i])
+  
+  export_graph(gg,
+               update = TRUE,
+               run_time = run_time,
+               create_code_html = TRUE,
+               folder_name = list_df_annuel[i],
+               perim = &quot;INF&quot;)
+}
+
+
+# gg_IPC1_mensuel
+# gg_IPC2_mensuel
+# gg_IPC3_mensuel
+# gg_IPC4_mensuel
+# gg_IPC5_mensuel
+# 
+# gg_IPC1_annuel
+# gg_IPC2_annuel
+# gg_IPC3_annuel
+# gg_IPC4_annuel
+# gg_IPC5_annuel</code></pre>
+
