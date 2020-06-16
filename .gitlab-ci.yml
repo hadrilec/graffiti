@@ -3,7 +3,7 @@ stages:
     - deploy
 
 variables:
-  CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/sic/divers/dataviz_conj"
+  CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj"
 
 package:
   # Use stage build here, so the pages job may later pickup the created site.
@@ -13,13 +13,9 @@ package:
   script:
     - 'docker build -t $CONTAINER_RELEASE_API .'
     - 'docker push $CONTAINER_RELEASE_API'
-  only:
-    - master@sic/divers/dataviz_conj
 
 deploy:
   stage: deploy
-  only:
-    - master@sic/divers/dataviz_conj
   tags:
     - maven
   script:
@@ -30,4 +26,4 @@ deploy:
     - master
   environment:
     name: prod
-    url: http://dataviz.dev.innovation.insee.eu
+    url: http://dataviz-conj.dev.innovation.insee.eu
