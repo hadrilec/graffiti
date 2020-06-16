@@ -9,4 +9,4 @@ ADD ./*.R /srv/shiny-server/
 ADD ./cahier.Rmd /srv/shiny-server/cahier.Rmd
 
 # Données
-ADD ./data/* /srv/shiny-server/data/
+ADD ./data/resultats/* /srv/shiny-server/data/resultats/
