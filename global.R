@@ -90,7 +90,7 @@ api_key_eia = "423b693a2da4d6e9f5b0a1957eff0ba8"
 eia_set_key(api_key_eia)
 
 # Federal Reserve API key
-fredr_set_key("1e1376b050a44076281adda2fe2e1a32")
+#fredr_set_key("1e1376b050a44076281adda2fe2e1a32")
 
 # AQICN
 api_token_aqicn = "d2cec6e4da536c80809e27cfc169962408f18642"
