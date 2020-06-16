@@ -8,7 +8,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "docker-registry.beta.innovation.insee.eu/sic/divers/dataviz_conj",
+      "image": "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj",
       "network": "BRIDGE",
       "portMappings": [
         {
@@ -34,7 +34,7 @@
   ],
   "labels": {
     "HAPROXY_GROUP": "external",
-    "HAPROXY_0_VHOST": "dataviz.dev.innovation.insee.eu",
+    "HAPROXY_0_VHOST": "dataviz-conj.dev.innovation.insee.eu",
     "HAPROXY_0_ENABLED": "true",
     "HAPROXY_0_REDIRECT_TO_HTTPS": "true",
     "HAPROXY_0_FRONTEND_HEAD": "",
