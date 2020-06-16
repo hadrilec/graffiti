@@ -1,4 +1,3 @@
-
 # lib_loc = "N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/R/R-3.6.1/library"
 # .libPaths("N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/R/R-3.6.1/library")
 
@@ -32,7 +31,7 @@ library(plotly)
 library(RColorBrewer)
 library(ggthemes)
 
-library(fredr)
+#library(fredr)
 library(eia)
 library(saqgetr)
 library(eurostat)
