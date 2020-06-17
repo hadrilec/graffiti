@@ -28,6 +28,7 @@ library(zoo)
 
 library(rmarkdown)
 library(plotly)
+library(highcharter)
 library(RColorBrewer)
 library(ggthemes)
 
@@ -44,9 +45,9 @@ library(rvest)
 
 Print = function(x){
     obj_name = deparse(substitute(x))
-    print(obj_name);print(x)
+    # print(obj_name);print(x)
     
-    cat(file=stderr(), obj_name, x, "\n")
+    cat(file = stderr(), obj_name, ":", x, "\n")
 }
 
 link_app =  "N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/Rshiny boite a outils"

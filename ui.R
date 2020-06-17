@@ -66,7 +66,7 @@ shinyUI(
                             'select_title', 
                             size = 30,
                             label = NULL,
-                            width = "400px",
+                            width = "600px",
                             choices = NULL,
                             options = list(
                               placeholder = 'Sélectionner un titre',
@@ -92,6 +92,13 @@ shinyUI(
                                fluidRow(
                                  tags$style(type = "text/css", "#downloadData {color: black; margin-left:75px;}"),
                                  downloadButton("downloadData", label = "Télécharger les données")
+                               ),
+                               
+                               materialSwitch(
+                                 inputId = "interact_plot",
+                                 label = "Graphique intéractif", 
+                                 value = FALSE,
+                                 status = "primary"
                                ),
                                # fluidRow(
                                #   tags$style(type = "text/css", "#downloadPlot {color: black; margin-left:75px;}"),

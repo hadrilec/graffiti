@@ -257,7 +257,8 @@ shinyServer(function(input,output,session) {
         # 
         Print(var)
         
-        pattern_searched = paste0("gg_plot", ".rds")
+        
+        pattern_searched = paste0(c("gg_plot", "gg_html"), ".rds", collapse = "|")
         path_var = file.path(link_results, perim, var)
         
           list_file_var = file.path(path_var, list.files(path_var, pattern = pattern_searched))
@@ -281,8 +282,15 @@ shinyServer(function(input,output,session) {
              Print(file_to_load)
            
               gg = readRDS(file_to_load)
-            
-              gg_react[[var]] = gg
+              
+              var_ly = paste0(var, "_ly")
+              if(input$interact_plot == TRUE){
+                if("ggplot" %in% class(gg)){
+                  gg_react[[var_ly]] = plotly::ggplotly(gg)
+                }else{
+                  gg_react[[var_ly]] = gg
+                }
+              }
             
               Print(names(reactiveValuesToList(gg_react)))
               
@@ -314,18 +322,46 @@ shinyServer(function(input,output,session) {
               # 
               
               var_gg = paste0(var, "_gg")
-              output[[var_gg]] <- renderPlot({gg_react[[var]]})
+              var_ly_gg = paste0(var_ly, "_gg")
+              # output[[var_gg]] <- renderPlot({gg_react[[var]]})
               
               # 
               # creation d'un onglet/tab avec le graphique 
               # 
               Print(var)
+              Print(class(gg))
               
+              if("ggplot" %in% class(gg)){
+                
+                output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                
+                output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
+                
+                if(input$interact_plot == FALSE){
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                              plotOutput(var_gg,
+                                                                         width = "100%"
+                                                                         , height = "80vh"
+                                                              ))
+                }else{
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                              plotlyOutput(var_ly_gg,
+                                                                           width = "100%"
+                                                                           , height = "80vh"
+                                                              ))
+                }
+                
+              }else if("highchart" %in% class(gg)){
+                
+                output[[var_gg]] <- renderHighchart({gg_react[[var]]})
+                
                 list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                            plotOutput(var_gg,
-                                                                       width = "100%"
-                                                                       , height = "80vh"
+                                                            highchartOutput(var_gg,
+                                                                            width = "100%"
+                                                                            , height = "80vh"
                                                             ))
+              }
+              
               
                 
                 list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
@@ -349,7 +385,7 @@ shinyServer(function(input,output,session) {
       }
       
       list_tab2[[length(list_tab2)+1]] =
-        tabPanel(title = "Dictionnaire",
+        tabPanel(title = "Catalogue",
                  box(
                    width = "100%", height = "75vh",
                    
