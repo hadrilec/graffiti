@@ -42,7 +42,12 @@ library(RJSONIO)
 library(xml2)
 library(rvest)
 
-Print = function(x){print(deparse(substitute(x)));print(x)}
+Print = function(x){
+    obj_name = deparse(substitute(x))
+    print(obj_name);print(x)
+    
+    cat(file=stderr(), obj_name, x, "\n")
+}
 
 link_app =  "N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/Rshiny boite a outils"
 
