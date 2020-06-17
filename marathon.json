@@ -1,0 +1,46 @@
+{
+  "id": "xlapdo/dataviz",
+  "instances": 1,
+  "cpus": 1,
+  "mem": 2048,
+  "disk": 0,
+  "gpus": 0,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 3838,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "name": "default"
+        }
+      ],
+      "privileged": false,
+      "forcePullImage": true
+    }
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 120,
+      "intervalSeconds": 30,
+      "timeoutSeconds": 5,
+      "maxConsecutiveFailures": 0,
+      "portIndex": 0,
+      "protocol": "MESOS_TCP"
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_VHOST": "dataviz-conj.dev.innovation.insee.eu",
+    "HAPROXY_0_ENABLED": "true",
+    "HAPROXY_0_REDIRECT_TO_HTTPS": "true",
+    "HAPROXY_0_FRONTEND_HEAD": "",
+    "HAPROXY_0_FRONTEND_BACKEND_GLUE": "",
+    "HAPROXY_0_BACKEND_HTTP_HEALTHCHECK_OPTIONS": "  option  httpchk GET /\n  timeout check {healthCheckTimeoutSeconds}s\n"
+
+  },
+  "requirePorts": true
+}

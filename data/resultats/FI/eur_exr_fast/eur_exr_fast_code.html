@@ -1,0 +1,84 @@
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>library(ggthemes)
+library(lubridate)
+library(tidyverse)
+library(rwebstat)
+
+start_time = today() %m-% months(12)
+
+runtime_start = Sys.time()
+
+list_series_id = c(&quot;EXR.D.JPY.EUR.SP00.A&quot;, &quot;EXR.D.GBP.EUR.SP00.A&quot;,
+                   &quot;EXR.D.USD.EUR.SP00.A&quot;, &quot;EXR.D.CNY.EUR.SP00.A&quot;)
+
+data =  rwebstat::w_data(dataset_name = &quot;EXR&quot;,
+                         startPeriod = year(start_time),
+                         series_name = paste0(list_series_id, collapse = &quot;+&quot;))
+
+df = data %&gt;% 
+  pivot_longer(-date, names_to = &quot;variable&quot;, values_to = &quot;value&quot;) %&gt;% 
+  mutate(label = case_when(str_detect(variable, &quot;EXR.D.JPY.EUR.SP00.A&quot;) ~ &quot;YEN / EURO&quot;,
+                           str_detect(variable, &quot;EXR.D.USD.EUR.SP00.A&quot;) ~ &quot;DOLLAR / EURO&quot;,
+                           str_detect(variable, &quot;EXR.D.GBP.EUR.SP00.A&quot;) ~ &quot;POUND / EURO&quot;,
+                           str_detect(variable, &quot;EXR.D.CNY.EUR.SP00.A&quot;) ~ &quot;YUAN / EURO&quot;
+                           )) %&gt;% drop_na()
+
+last_values = df %&gt;% 
+  group_by(label) %&gt;% 
+  dplyr::filter(date == max(date)) %&gt;% 
+  mutate(value = round(value, 2)) 
+
+time_now = with_tz(now(), &quot;Europe/Paris&quot;)
+
+subtt = sprintf(&quot;Dernier point : %s, Fait le : %s\nSource : Banque de France\n&quot;,
+                max(last_values$date), gsub(&quot;CET&quot;,&quot;&quot;, time_now))
+
+for(i in 1:nrow(last_values)){
+  subtt = paste0(subtt, sprintf(&quot; %s : %s,  &quot;, last_values[i,&quot;label&quot;],  last_values[i,&quot;value&quot;]))
+}
+
+graph_eur_exr_fast = 
+  ggplot(data = df, aes(x = date, y = value, colour = label)) +
+  facet_wrap(~label, scales = &quot;free&quot;) +
+  geom_line(size = 1) +
+  labs(subtitle = subtt) +
+  scale_y_continuous(position = &quot;right&quot;) +
+  ggtitle(&quot;Taux de change de l&#39;euro&quot;) +
+  ggthemes::theme_stata() +
+  theme(
+    plot.title   = element_text(lineheight = 0.8, face = &quot;bold&quot;, hjust = 0.5, size = 18),
+    axis.text.x  = element_text(angle = 45, hjust = 1),
+    axis.text.y  = element_text(angle = 0, hjust = 1),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank(),
+    text = element_text(size = 14),
+    strip.text.x = element_text(size = 14),
+    legend.position = &quot;bottom&quot;
+  ) 
+  
+runtime_end = Sys.time()
+run_time = as.numeric(difftime(runtime_end, runtime_start), units = &quot;secs&quot;)
+
+
+export_graph(
+  graph_eur_exr_fast,
+  # create_code_html =  TRUE,
+  folder_name = &quot;eur_exr_fast&quot;,
+  perim = &quot;FI&quot;,
+  update = TRUE,
+  run_time = run_time
+)</code></pre>
+

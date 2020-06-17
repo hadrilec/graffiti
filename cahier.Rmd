@@ -1,0 +1,22 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+params: 
+  list_graph:
+    value: list_graph
+classoption: landscape
+---
+  
+  
+```{r, echo = FALSE, eval = TRUE, fig.width = 15, fig.height = 10}
+options(warn = -1)
+# list_graph_cahier = list()
+# load("N:/G140/M-G140/Usuels.dsc/pRev/resultats/FI/af_menages/dl.af_menages_gg_estim.RData")
+# list_graph_cahier[[1]] = gg_estim
+# # list_graph_cahier
+# for(i in 1:length(list_graph_cahier)){
+#   list_graph_cahier[[i]]
+# }
+invisible(lapply(list_graph_cahier, print))
+```
