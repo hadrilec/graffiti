@@ -45,7 +45,8 @@ update_DB_variable <- function(perim = 'all',
         estim_file = list.files(path_folder_var, pattern = patt)
         prl_file = list.files(path_folder_var, "_prl.RData")
         # gg_plot_file = list.files(path_folder_var,  "_gg_plot.RData")
-        gg_plot_file = list.files(path_folder_var,  "_gg_plot.rds")
+        gg_plot_file = list.files(path_folder_var, 
+                                  pattern = paste0(c("_gg_plot.rds","_gg_html.rds"),  collapse = "|"))
         
         if(length(estim_file) > 0){
           estim_file_path = file.path(path_folder_var, estim_file)
@@ -105,18 +106,23 @@ update_DB_variable <- function(perim = 'all',
             
             var_title = gg$labels$title
             
+            if("highchart" %in% class(gg)){
+              var_title = gg[["x"]][["hc_opts"]][["title"]][["text"]]
+            }
+            
             if(is.null(var_title)){
               var_title = ""
             }
             
           }
           
-        }
+        } 
+        
       }
       list_df[[length(list_df)+1]] = data.frame(perim = as.character(folder),
                                                 var = as.character(var),
                                                 title = as.character(var_title),
-                                                run_time = gg_run_time,
+                                                run_time = as.numeric(as.character(gg_run_time)),
                                                 file = gg_code_file,
                                                 stringsAsFactors = FALSE)
     }
@@ -142,11 +148,11 @@ update_DB_variable <- function(perim = 'all',
     bind_rows(DB_variables_notitle) 
   
   # save(DB_variables , file = file_DB_path)
-  saveRDS(DB_variables , file = file_DB_path)
   
+  saveRDS(DB_variables , file = file_DB_path)
+  # return(DB_variables)
 }
 
 
 # update_DB_variable()
-# load(file_DB_path_)
 # DB_variable = readRDS(file_DB_path_)

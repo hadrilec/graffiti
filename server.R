@@ -225,6 +225,7 @@ shinyServer(function(input,output,session) {
   
   observeEvent({
     input$select_title
+    input$interact_plot
     update_plot_finished()
   },
   ignoreNULL = FALSE, ignoreInit = FALSE,
@@ -283,13 +284,25 @@ shinyServer(function(input,output,session) {
            
               gg = readRDS(file_to_load)
               
+              gg_react[[var]] = gg
+              
               var_ly = paste0(var, "_ly")
-              if(input$interact_plot == TRUE){
-                if("ggplot" %in% class(gg)){
-                  gg_react[[var_ly]] = plotly::ggplotly(gg)
-                }else{
-                  gg_react[[var_ly]] = gg
+              
+              Print(input$interact_plot)
+              
+              get_interactive_plot = FALSE
+              
+              if(!is.null(input$interact_plot)){
+                if(input$interact_plot == TRUE){
+                  if("ggplot" %in% class(gg)){
+                    get_interactive_plot = TRUE
+                  }
                 }
+              }
+              if(get_interactive_plot == TRUE){
+                gg_react[[var_ly]] = plotly::ggplotly(gg)
+              }else{
+                gg_react[[var_ly]] = gg
               }
             
               Print(names(reactiveValuesToList(gg_react)))
@@ -329,10 +342,11 @@ shinyServer(function(input,output,session) {
               # creation d'un onglet/tab avec le graphique 
               # 
               Print(var)
-              Print(class(gg))
+             
               
               if("ggplot" %in% class(gg)){
                 
+                Print(class(gg))
                 output[[var_gg]] <- renderPlot({gg_react[[var]]})
                 
                 output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
@@ -352,7 +366,7 @@ shinyServer(function(input,output,session) {
                 }
                 
               }else if("highchart" %in% class(gg)){
-                
+                Print(class(gg))
                 output[[var_gg]] <- renderHighchart({gg_react[[var]]})
                 
                 list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",

@@ -50,7 +50,7 @@ Print = function(x){
     cat(file = stderr(), obj_name, ":", x, "\n")
 }
 
-link_app =  "N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/Rshiny boite a outils"
+link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
 
 if(file.exists(link_app)){
   setwd(link_app)
