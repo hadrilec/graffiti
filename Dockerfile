@@ -4,6 +4,7 @@ FROM docker-registry.beta.innovation.insee.eu/xlapdo/image_dataviz_conj:latest
 
 # Ajout de l'application
 ADD ./*.R /srv/shiny-server/
+ADD ./*.sh /srv/shiny-server/
 
 # Fichier RMD
 #ADD ./function/cahier.Rmd /srv/shiny-server/function/cahier.Rmd
