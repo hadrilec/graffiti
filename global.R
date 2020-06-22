@@ -36,6 +36,7 @@ library(ggthemes)
 library(eia)
 library(saqgetr)
 library(eurostat)
+library(idbr)
 library(Quandl)
 library(rsdmx)
 library(pdfetch)
@@ -187,10 +188,10 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   if (missing(folder_name)) {
     folder_name = deparse(substitute(plot))
   }
-  if (!any(class(plot) == "ggplot")) {
-    cat("plot doit etre un graphique de class ggplot")
-    stop()
-  }
+  # if (!any(class(plot) == "ggplot")) {
+  #   cat("plot doit etre un graphique de class ggplot")
+  #   stop()
+  # }
   error_message = FALSE
   if (exists("chemin_prev")) {
     path_resultats = file.path(".", "data","resultats")
@@ -272,7 +273,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
                       params = list(code_file = link_used_file))
   }
   
-  plot + ggsave(file_path_pdf, width = width, height = height)
+  # plot + ggsave(file_path_pdf, width = width, height = height)
   plot$update <- update
   plot$link_code_file <- link_used_file
   plot$run_time <- run_time

@@ -1,4 +1,6 @@
-shinyServer(function(input,output,session) {
+shinyServer(function(input, output, session) {
+  
+  observe({Print(input$tabs_menu)})
   
   DB_variables_react <- reactive({
     DB_variables %>% 
@@ -13,6 +15,7 @@ shinyServer(function(input,output,session) {
   var_name <- reactiveVal()
   
   file_gg  <- reactiveVal()
+  current_plot  <- reactiveVal()
   update_plot  <- reactiveVal()
   update_plot_finished  <- reactiveVal()
   run_time_plot  <- reactiveVal()
@@ -24,12 +27,21 @@ shinyServer(function(input,output,session) {
     
     Print(var_name())
     
+    gg = current_plot()
+    
     if(input$select_title != ""){
       if(!is.null(var_name())){
-        updateSelectizeInput(session, "cahier", 
-                             choices = c(var_name(), input$cahier), selected = input$cahier)
+        if("ggplot" %in% class(gg)){
+          updateSelectizeInput(session, "cahier", 
+                               choices = c(var_name(), input$cahier), selected = input$cahier)
+        }else{
+          updateSelectizeInput(session, "cahier", 
+                               choices = c(input$cahier), selected = input$cahier)
+        }
+       
       }
     }
+    
   })
   
   # 
@@ -285,6 +297,7 @@ shinyServer(function(input,output,session) {
               gg = readRDS(file_to_load)
               
               gg_react[[var]] = gg
+              current_plot(gg)
               
               var_ly = paste0(var, "_ly")
               
@@ -300,7 +313,35 @@ shinyServer(function(input,output,session) {
                 }
               }
               if(get_interactive_plot == TRUE){
-                gg_react[[var_ly]] = plotly::ggplotly(gg)
+                
+                gg_ly =  plotly::ggplotly(gg) %>% 
+                  layout(legend = list(orientation = "h",   # show entries horizontally
+                                       xanchor = "center",  # use center of legend as anchor
+                                       x = 0.5,
+                                       yanchor = "bottom",
+                                       y = -0.6
+                                       ))  
+                # subtitle
+                # if(!is.null(gg$labels$subtitle) & !is.null(gg$labels$title)){
+                  # subtitle_ly = paste0(gg$labels$title,
+                  #                   '<br>', '<sup>',
+                  #                   gsub("\\\n", "", gg$labels$subtitle),
+                  #                   '</sup>')
+                  # subtitle_ly = paste0(gsub("\\\n", "", gg$labels$subtitle))
+                                    
+                  # gg_ly = gg_ly %>% 
+                  #   layout(
+                  #     # title = list(text = title_ly),
+                  #     annotations=list(text = subtitle_ly,
+                  #                      xref="paper",
+                  #                      x=0.5,
+                  #                      yanchor = "bottom",
+                  #                      y = -0.2,
+                  #                      showarrow=FALSE)
+                  #          )
+                # }
+                
+                gg_react[[var_ly]] = gg_ly
               }else{
                 gg_react[[var_ly]] = gg
               }
@@ -314,22 +355,7 @@ shinyServer(function(input,output,session) {
               link_code_file(link_code_file_)
               update_plot(gg$update)
               run_time_plot(gg$run_time)
-              # 
-              # recherche des donnees dans les graphs
-              # emplacement peut varier en fonction du graphique
-              # 
-              if(length(gg$data) != 0){
-                values$df_data <- gg$data
-              }else{
-                if (length(gg$layers) >= 2) {
-                  if (!is.null(gg$layers[[1]]$data) & !is.null(gg$layers[[2]]$data)) {
-                    values$df_data <-
-                      plyr::rbind.fill(gg$layers[[1]]$data, gg$layers[[2]]$data)
-                    
-                  }
-                }
-              }
-              
+         
               # 
               # mise a jour du graphique a l ecran 
               # 
@@ -401,7 +427,7 @@ shinyServer(function(input,output,session) {
       list_tab2[[length(list_tab2)+1]] =
         tabPanel(title = "Catalogue",
                  box(
-                   width = "100%", height = "75vh",
+                   width = "100%", 
                    
                    DT::dataTableOutput("dico_home_page",
                                        width = "100%"
@@ -421,21 +447,78 @@ shinyServer(function(input,output,session) {
       })
 
   observe({
-    
+      # observeEvent(
+      #   {input$downloadData},
+      #   {
+      Print(input$downloadData)
+      
     # 
     # données pour le bouton téléchargement ####
     # 
     
-    if(exists("values")){
+      # 
+      # recherche des donnees dans les graphs
+      # emplacement peut varier en fonction du graphique
+      # 
       
-      data_ <- values$df_data 
+      gg = current_plot()
+      
+      if("ggplot" %in% class(gg)){
+        if(length(gg$data) != 0){
+          data_current_plot <- gg$data
+        }else{
+          if (length(gg$layers) >= 2) {
+            if (!is.null(gg$layers[[1]]$data) & !is.null(gg$layers[[2]]$data)) {
+              data_current_plot <-
+                plyr::rbind.fill(gg$layers[[1]]$data, gg$layers[[2]]$data)
+              
+            }
+          }
+        }
+      }
+      if("highchart" %in% class(gg)){
+        
+        n_series = length(gg[["x"]][["hc_opts"]][["series"]])
+        if(n_series > 0){
+          serie_id = 1
+          list_df = list()
+          
+          for(serie_id in 1:n_series){
+            data_list = gg[["x"]][["hc_opts"]][["series"]][[serie_id]][["data"]]
+            
+            data_raw_hc = unlist(flatten(data_list))
+            
+            for(test_id in 2*1:(length(data_list)/2)){
+              list_df[[length(list_df)+1]] = data.frame(time = data_raw_hc[test_id-1],
+                                                        value = data_raw_hc[test_id],
+                                                        series = serie_id)
+            }
+          }
+          
+          data_hc = bind_rows(list_df)
+          
+          data_hc = data_hc %>% 
+            mutate(time2 = as.POSIXct(time/1000, origin  = "1970-01-01"))
+          
+        }else{
+          data_hc = data.frame()
+        }
+        data_current_plot = data_hc
+      }
+      
+      if(exists("data_current_plot")){
+        data_ = data_current_plot
+      }else{
+        data_ = NULL
+      }
+     
+    
       if(!is.null(data_)){
         if(all(names(data_) %in% c("time", "value", "label"))){
           data_ = data_ %>% 
             tidyr::pivot_wider(names_from = "label", values_from = "value")
         }
       }
-     
       
       if(exists("file_gg")){
         file_gg_ = file_gg()
@@ -460,7 +543,7 @@ shinyServer(function(input,output,session) {
           )
         }
       }
-    }
+    
     
     # 
     # graphique pour le bouton téléchargement ####
@@ -492,7 +575,7 @@ shinyServer(function(input,output,session) {
     
     output$downloadCahier <- downloadHandler(
       filename = function() {
-        paste("cahier_", gsub("-|:| |CET","", Sys.time()), ".pdf", sep="")
+        paste("presentation_", gsub("-|:| |CET","", Sys.time()), ".pdf", sep="")
       },
       content = function(file) {
         rmarkdown::render(input = cahier_file,

@@ -81,6 +81,9 @@ shinyUI(
                      sidebarMenu(id = "tabs_menu",
                                  menuItem("Graphiques", tabName = "8",
                                           icon = icon("fas fa-sitemap"),startExpanded = F),
+                                 
+                                 menuItem("Graphiques2", tabName = "9",
+                                          icon = icon("fas fa-sitemap"),startExpanded = F),
                                  # fluidRow(
                                  # materialSwitch(
                                  #   inputId = "interactive_plot",
