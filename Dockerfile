@@ -6,7 +6,11 @@ FROM docker-registry.beta.innovation.insee.eu/xlapdo/image_dataviz_conj:latest
 ADD ./*.R /srv/shiny-server/
 
 # Fichier RMD
-ADD ./cahier.Rmd /srv/shiny-server/cahier.Rmd
+#ADD ./function/cahier.Rmd /srv/shiny-server/function/cahier.Rmd
+#ADD ./function/read_code.Rmd /srv/shiny-server/function/read_code.Rmd
 
-# Données
+
+# duplicate app
 ADD ./data/ /srv/shiny-server/data/
+ADD ./code/ /srv/shiny-server/code/
+ADD ./function/ /srv/shiny-server/function/
