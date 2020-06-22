@@ -14,4 +14,4 @@ ADD ./data/ /srv/shiny-server/data/
 ADD ./code/ /srv/shiny-server/code/
 ADD ./function/ /srv/shiny-server/function/
 
-RUN R -e "install.packages(c('highcharter'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
+#RUN R -e "install.packages(c('highcharter'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
