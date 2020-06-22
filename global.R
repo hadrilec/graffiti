@@ -1,3 +1,4 @@
+
 # lib_loc = "N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/R/R-3.6.1/library"
 # .libPaths("N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/R/R-3.6.1/library")
 
@@ -146,4 +147,3 @@ icons_perims = c(icons_perims,
 # gg = readRDS("./data/resultats/ZE/population_europe/population_europe_gg_plot.rds")
 
 # plot_ex = plotly::ggplotly(gg)
-
