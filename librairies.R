@@ -14,6 +14,12 @@ library(zoo)
 
 library(rmarkdown)
 library(plotly)
+
+pkg = installed.packages()
+if(!"highcharter" %in% pkg[,1]){
+  install.packages("highcharter")
+}
+
 library(highcharter)
 library(RColorBrewer)
 library(ggthemes)
