@@ -9,8 +9,9 @@ ADD ./*.R /srv/shiny-server/
 #ADD ./function/cahier.Rmd /srv/shiny-server/function/cahier.Rmd
 #ADD ./function/read_code.Rmd /srv/shiny-server/function/read_code.Rmd
 
-
 # duplicate app
 ADD ./data/ /srv/shiny-server/data/
 ADD ./code/ /srv/shiny-server/code/
 ADD ./function/ /srv/shiny-server/function/
+
+RUN R -e "install.packages(c('highcharter'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
