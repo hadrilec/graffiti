@@ -1,0 +1,25 @@
+---
+output: html_fragment 
+params: 
+  code_file:
+    value: code_file
+---
+
+
+```{css, echo=FALSE}
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+```
+
+```{r, eval = FALSE, code = readLines(code_file, encoding = "UTF-8")}
+# code_file = "M:/Usuels.dsc/pRev/FI/cahier_FI/code/BDF_epargne_menage_agregat_M3.R"
+ # readLines(code_file, encoding = "UTF-8")
+```
+
+

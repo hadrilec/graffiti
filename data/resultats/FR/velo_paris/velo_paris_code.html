@@ -1,0 +1,92 @@
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(highcharter)
+library(htmlwidgets)
+library(xts)
+library(ggthemes)
+
+time_now = with_tz(now(), &quot;Europe/Paris&quot;)
+runtime_start = Sys.time()
+
+# source
+# https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs/information/?disjunctive.id_compteur&amp;disjunctive.nom_compteur&amp;disjunctive.id&amp;disjunctive.name
+
+link = &quot;https://opendata.paris.fr/api/records/1.0/analyze/?output_timezone=UTC&amp;disjunctive.id_compteur=true&amp;disjunctive.nom_compteur=true&amp;disjunctive.id=true&amp;disjunctive.name=true&amp;timezone=Europe%2FParis&amp;dataset=comptage-velo-donnees-compteurs&amp;x=date.year&amp;x=date.month&amp;x=date.day&amp;x=date.hour&amp;sort=x.date.year,x.date.month,x.date.day,x.date.hour&amp;maxpoints=&amp;y.serie1-1.expr=sum_counts&amp;y.serie1-1.func=AVG&amp;y.serie1-1.cumulative=false&amp;lang=fr&quot;
+
+df = jsonlite::fromJSON(link, flatten = T)
+
+data = df %&gt;% 
+  mutate(year = x.year) %&gt;% 
+  mutate(hour = case_when(nchar(x.hour) == 1 ~ paste0(&quot;0&quot;, x.hour),
+                           TRUE ~ as.character(x.hour))) %&gt;% 
+  mutate(month = case_when(nchar(x.month) == 1 ~ paste0(&quot;0&quot;, x.month),
+                           TRUE ~ as.character(x.month))) %&gt;% 
+  mutate(day = case_when(nchar(x.day) == 1 ~ paste0(&quot;0&quot;, x.day),
+                           TRUE ~ as.character(x.day))) %&gt;% 
+  mutate(time = as_datetime(sprintf(&quot;%s-%s-%s %s:00:00&quot;, year, month, day, hour))) %&gt;% 
+  mutate(variable1 = `serie1-1`) %&gt;% 
+  select(time, variable1) %&gt;% 
+  pivot_longer(-time, names_to = &quot;variable&quot;, values_to = &quot;value&quot;) %&gt;% 
+  mutate(label = case_when(variable == &quot;variable1&quot; ~ &quot;Moyenne horaire du comptage des vélos&quot;))
+
+subtt3 = sprintf(&quot;Fait le : %s, Source: Marie de Paris/open data&quot;, time_now)
+
+# 
+# GRAPHIQUE GGPLOT
+# 
+
+data_plot = data
+
+gg_velo_paris =
+  ggplot(data_plot, aes(x = time, y = value)) +
+  facet_wrap(~label, scales = &quot;free&quot;) +
+  geom_line(show.legend = F) +
+  ggtitle(&quot;Trafic cycliste dans Paris&quot;) +
+  labs(subtitle = sprintf(&quot;%s&quot;, subtt3) )
+
+# 
+# GRAPHIQUE HIGHCHART (html/javascript)
+# 
+
+data_hc = data %&gt;% 
+  select(-label) %&gt;% 
+  pivot_wider(., names_from = &quot;variable&quot;, values_from = &quot;value&quot;) %&gt;% 
+  as.data.frame()
+
+# file_html = file.path(Sys.getenv(&quot;USERPROFILE&quot;), &quot;Desktop&quot;, &quot;hc_chart_velo.html&quot;)
+
+xdata = xts(data_hc[,-1], order.by = data_hc[,1])
+names(xdata) = &quot;variable1&quot;
+
+hc_velo_paris = 
+  highchart(type = &quot;stock&quot;) %&gt;% 
+  hc_title(text = &quot;Trafic cycliste dans Paris&quot;) %&gt;% 
+  hc_subtitle(text = sprintf(&quot;%s&quot;, subtt3)) %&gt;% 
+  hc_add_series(xdata$variable1, name = &quot;Débit horaire moyen&quot;, showInLegend = T) 
+
+runtime_end = Sys.time()
+
+run_time = as.numeric(difftime(runtime_end, runtime_start, units = &quot;secs&quot;))
+
+export_graph(plot = hc_velo_paris,
+             folder_name = &quot;velo_paris&quot;,
+             create_code_html = T,
+             run_time = run_time,
+             perim = &quot;FR&quot;,
+             update = T )
+
+# saveWidget(hc_velo_paris, file = file_html)</code></pre>
+
