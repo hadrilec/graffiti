@@ -393,17 +393,15 @@ shinyServer(function(input, output, session) {
                 
               }else if("highchart" %in% class(gg)){
                 Print(class(gg))
-                output[[var_gg]] <- renderHighchart({gg_react[[var]]})
-                
-                list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                            highchartOutput(var_gg,
-                                                                            width = "100%"
-                                                                            , height = "80vh"
-                                                            ))
+                # output[[var_gg]] <- renderHighchart({gg_react[[var]]})
+                # 
+                # list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                #                                             highchartOutput(var_gg,
+                #                                                             width = "100%"
+                #                                                             , height = "80vh"
+                #                                             ))
               }
               
-              
-                
                 list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
                 page_code(list_file_code[1])
                 

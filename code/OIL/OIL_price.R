@@ -73,7 +73,7 @@ avg_last_month =
   mutate(month_ = month(date)) %>% 
   mutate(month_abb = month(date, label = TRUE)) %>% 
   mutate(year_ = year(date)) %>% 
-  filter(year_ == year_value & month_ == last_month_value) %>% 
+  filter(year_ == year_value & month_ %in% c(last_month_value, last_month_value-1) ) %>% 
   filter(str_detect(name, "Brent")) %>% 
   group_by(name, month_, year_, month_abb, currency) %>% 
   summarise(value = mean(value, na.rm = TRUE)) %>% 
