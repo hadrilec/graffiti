@@ -16,7 +16,8 @@ file_data_update = file.path(link_results_, "_files",
 file_data_update_date = file.path(link_results_, "_files",
                              paste0("data_update_", gsub("-|:| |CET","", Sys.time()),".rds"))
 
-source("./librairies.R")
+source("./function/librairies.R")
+source("./function/api_key.R")
 source("./function/export_graph.R")
 source("./function/pRev_DB_var_names.R")
 
