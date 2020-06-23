@@ -23,6 +23,7 @@ cat(sessionInfo(), file = stderr())
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")
 # setwd(link_app)
+# 
 
 chemin_prev = ""
 link_results =  "./data/resultats"
