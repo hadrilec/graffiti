@@ -42,7 +42,7 @@ graph_eur_exr_fast =
   facet_wrap(~label, scales = "free") +
   geom_line(size = 1) +
   labs(subtitle = subtt) +
-  scale_y_continuous(position = "right") +
+  # scale_y_continuous(position = "right") +
   ggtitle("Taux de change de l'euro") +
   ggthemes::theme_stata() +
   theme(

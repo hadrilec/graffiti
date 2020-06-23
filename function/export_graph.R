@@ -30,6 +30,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
                                    perim)
   path_resultats_perim_folder = file.path(".","data", "resultats", 
                                           perim, folder_name)
+  
   for (link in c(path_resultats_perim, path_resultats_perim_folder)) {
     if (!file.exists(link)) {
       dir.create(link, "0777")
