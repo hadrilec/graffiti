@@ -11,6 +11,8 @@ Print = function(x){
   cat(file = stderr(), obj_name, ":", x, "\n")
 }
 
+Print(getwd())
+
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/pRev_DB_var_names.R")

@@ -123,7 +123,9 @@ RTE_price_ = RTE_price %>%
   mutate(time_ = as_datetime(paste(sprintf("2020-%s-%s", month_, day_), paste0(hour_, ":00:00")))) %>% 
   filter(time_ < today()) %>%
   filter(!perim %in% c("DE", "CH")) %>% 
-  mutate(perim = replace(perim, perim == "DL", "DE"))
+  mutate(perim = replace(perim, perim == "DL", "DE")) %>% 
+  filter(value = case_when(value < -200 ~ NA_real_,
+                           TRUE ~ as.numeric(value)))
 
 confin_dates = data.frame(perim = c("FR", "GB", "IT", 
                                     # "IT",
@@ -147,7 +149,7 @@ gg_RTE_price =
 ggplot(RTE_price_, aes(x = time_, y = value, colour = year_)) +
   geom_line(size = 1) +
   geom_vline(data = confin_dates, aes(xintercept = time_), linetype = "dashed") +
-  facet_wrap(~perim) +
+  facet_wrap(~perim, scales = "free") +
   ggtitle("Prix spot de l'éctricité en euros du Mwh sur le marché EPEX") +
   labs(subtitle = sprintf("Source : RTE, données disponibles heure par heure\n %s\n%s", comment, last_point)) +
   ggthemes::theme_stata() +

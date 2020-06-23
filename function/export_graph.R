@@ -50,8 +50,12 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   
   link_used_file = ""
   link_used_file <- try(rstudioapi::getSourceEditorContext()$path)
+  
   if (class(link_used_file) == "try-error") {
     link_used_file = ""
+  }
+  if(exists("link_app")){
+    link_used_file = gsub(link_app, ".", link_used_file)
   }
   
   # change_link_file = FALSE
