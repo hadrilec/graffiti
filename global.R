@@ -11,13 +11,14 @@ Print = function(x){
   cat(file = stderr(), obj_name, ":", x, "\n")
 }
 
-Print(getwd())
-
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/pRev_DB_var_names.R")
 source("./function/export_graph.R")
 source("./function/readSDMX2.R")
+
+Print(getwd())
+Print(sessionInfo())
 
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")
