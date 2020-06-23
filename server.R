@@ -64,6 +64,10 @@ shinyServer(function(input, output, session) {
       render_update_button = FALSE
     }
 
+    Print(update_plot())
+    Print(link_code_file())
+    Print(render_update_button)
+    
     if(render_update_button){
       output$MAJ_plot <- renderUI({
         actionButton("MAJ_plot", label = "MAJ du graphique", icon("refresh"))
