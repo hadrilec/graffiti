@@ -68,16 +68,16 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   #   }
   # }
   
-  if (file.exists(file_path)) {
-    gg = readRDS(file_path)
-    if (!is.null(gg$link_code_file)) {
-      if(gg$link_code_file != ""){
-        if (!str_detect(gg$link_code_file, "server")) {
-          link_used_file <- gg$link_code_file
-        }
-      }
-    }
-  }
+  # if (file.exists(file_path)) {
+  #   gg = readRDS(file_path)
+  #   if (!is.null(gg$link_code_file)) {
+  #     if(gg$link_code_file != ""){
+  #       # if (!str_detect(gg$link_code_file, "server")) {
+  #       link_used_file <- gg$link_code_file
+  #       # }
+  #     }
+  #   }
+  # }
   
   # 
   # html code file creation
