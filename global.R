@@ -18,7 +18,7 @@ source("./function/export_graph.R")
 source("./function/readSDMX2.R")
 
 Print(getwd())
-cat(sessionInfo(), file = stderr())
+# sessionInfo()
 
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")
