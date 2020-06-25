@@ -2,6 +2,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
                          width = 15, height = 10, update = FALSE) 
 {
+  
   if (missing(folder_name)) {
     folder_name = deparse(substitute(plot))
   }
@@ -10,6 +11,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   #   stop()
   # }
   error_message = FALSE
+  
   if (exists("chemin_prev")) {
     path_resultats = file.path(".", "data","resultats")
     if (!file.exists(path_resultats)) {
@@ -28,6 +30,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   }
   path_resultats_perim = file.path(".","data", "resultats", 
                                    perim)
+  
   path_resultats_perim_folder = file.path(".","data", "resultats", 
                                           perim, folder_name)
   
@@ -86,14 +89,33 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   file_name_html = paste0(folder_name, "_code.html")
   rmd_output_file = file.path(path_resultats_perim_folder, file_name_html)
   
-  code_file = link_used_file
+  rmd_output_file_ = file.path(getwd(), substr(rmd_output_file, 3, nchar(rmd_output_file)))
+  link_used_file_ = file.path(getwd(), substr(link_used_file, 3, nchar(link_used_file)))
   
-  if(create_code_html){
+  code_file = link_used_file_
+  
+  
+  if(!file.exists(rmd_output_file_) || create_code_html){
+    # if(create_code_html){
+    
+    # render_code_html = try(
+    #   rmarkdown::render(input = rmd_file,
+    #                     runtime = "shiny",
+    #                     output_file = rmd_output_file,
+    #                     params = list(code_file = link_used_file))
+    # )
+    # 
+    # if(class(render_code_html) == "try-error"){
+    
     rmarkdown::render(input = rmd_file,
                       runtime = "shiny",
-                      output_file = rmd_output_file,
-                      params = list(code_file = link_used_file))
+                      output_file = rmd_output_file_,
+                      params = list(code_file = link_used_file_))
+    # }
+    
+    # }
   }
+
   
   # plot + ggsave(file_path_pdf, width = width, height = height)
   plot$update <- update

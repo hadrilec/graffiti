@@ -70,7 +70,7 @@ run_time = as.numeric(difftime(runtime_end, runtime_start, units = "secs"))
 
 export_graph(plot = hc_velo_paris,
              folder_name = "velo_paris",
-             create_code_html = T,
+             # create_code_html = T,
              run_time = run_time,
              perim = "FR",
              update = T )

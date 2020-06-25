@@ -17,6 +17,8 @@ source("./function/pRev_DB_var_names.R")
 source("./function/export_graph.R")
 source("./function/readSDMX2.R")
 
+pkg = installed.packages()
+
 Print(getwd())
 # sessionInfo()
 
