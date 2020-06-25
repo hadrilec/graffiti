@@ -1,26 +1,39 @@
-shinyServer(function(input, output, session) {
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>shinyServer(function(input, output, session) {
   
   observe({Print(input$tabs_menu)})
   
-  DB_variables_react <- reactive({
-    DB_variables %>% 
+  DB_variables_react &lt;- reactive({
+    DB_variables %&gt;% 
       arrange(perim)
   })
   
-  link_code_file <- reactiveVal()
+  link_code_file &lt;- reactiveVal()
   
-  gg_react <- reactiveValues()
-  values <- reactiveValues(df_data = NULL)
+  gg_react &lt;- reactiveValues()
+  values &lt;- reactiveValues(df_data = NULL)
   
-  var_name <- reactiveVal()
+  var_name &lt;- reactiveVal()
   
-  file_gg  <- reactiveVal()
-  current_plot  <- reactiveVal()
-  update_plot  <- reactiveVal()
-  update_plot_finished  <- reactiveVal()
-  run_time_plot  <- reactiveVal()
-  DB_plot_cahier <- reactiveVal()
-  code_related_title <- reactiveVal()
+  file_gg  &lt;- reactiveVal()
+  current_plot  &lt;- reactiveVal()
+  update_plot  &lt;- reactiveVal()
+  update_plot_finished  &lt;- reactiveVal()
+  run_time_plot  &lt;- reactiveVal()
+  DB_plot_cahier &lt;- reactiveVal()
+  code_related_title &lt;- reactiveVal()
   page_code = reactiveVal()
   
   observeEvent({var_name()},{
@@ -29,13 +42,13 @@ shinyServer(function(input, output, session) {
     
     gg = current_plot()
     
-    if(input$select_title != ""){
+    if(input$select_title != &quot;&quot;){
       if(!is.null(var_name())){
-        if("ggplot" %in% class(gg)){
-          updateSelectizeInput(session, "cahier", 
+        if(&quot;ggplot&quot; %in% class(gg)){
+          updateSelectizeInput(session, &quot;cahier&quot;, 
                                choices = c(var_name(), input$cahier), selected = input$cahier)
         }else{
-          updateSelectizeInput(session, "cahier", 
+          updateSelectizeInput(session, &quot;cahier&quot;, 
                                choices = c(input$cahier), selected = input$cahier)
         }
        
@@ -60,7 +73,7 @@ shinyServer(function(input, output, session) {
         }
       }
     }
-    if(input$select_title == ""){
+    if(input$select_title == &quot;&quot;){
       render_update_button = FALSE
     }
 
@@ -69,11 +82,11 @@ shinyServer(function(input, output, session) {
     Print(render_update_button)
     
     if(render_update_button){
-      output$MAJ_plot <- renderUI({
-        actionButton("MAJ_plot", label = "MAJ du graphique", icon("refresh"))
+      output$MAJ_plot &lt;- renderUI({
+        actionButton(&quot;MAJ_plot&quot;, label = &quot;MAJ du graphique&quot;, icon(&quot;refresh&quot;))
       })
     }else{
-      output$MAJ_plot <- renderUI({NULL})
+      output$MAJ_plot &lt;- renderUI({NULL})
     }
     Print(render_update_button)
   })
@@ -92,7 +105,7 @@ shinyServer(function(input, output, session) {
       if(update_plot()){
         if(!is.null(link_code_file())){
           
-          print("plot update triggered ")
+          print(&quot;plot update triggered &quot;)
           Print(link_code_file())
           
           run_time_plot_final = 30
@@ -103,7 +116,7 @@ shinyServer(function(input, output, session) {
             }
           }
           
-          withProgress(message = 'MAJ du graphique', detail = "",{
+          withProgress(message = &#39;MAJ du graphique&#39;, detail = &quot;&quot;,{
                          # N = 60
                          for(i in 1:run_time_plot_final){
                            
@@ -112,15 +125,15 @@ shinyServer(function(input, output, session) {
                            
                            # Update progress
                            incProgress(1/run_time_plot_final,
-                                       detail = paste(round(i/run_time_plot_final*100), "%"))
+                                       detail = paste(round(i/run_time_plot_final*100), &quot;%&quot;))
                          }
                          
-                         source_plot = try(source(link_code_file(), encoding = "utf-8"))
+                         source_plot = try(source(link_code_file(), encoding = &quot;utf-8&quot;))
                        })
           
-         if(class(source_plot) != 'try-error'){
+         if(class(source_plot) != &#39;try-error&#39;){
            
-           print('update completed')
+           print(&#39;update completed&#39;)
            
            update_plot_finished(sample(1:100))  
            
@@ -138,17 +151,17 @@ shinyServer(function(input, output, session) {
   # 
   observeEvent({input$select_perim},{
     
-    perim <- input$select_perim
+    perim &lt;- input$select_perim
     
     Print(input$select_perim)
     
     if(!is.null(perim)){
-      if (perim != ""){
+      if (perim != &quot;&quot;){
         
         title_select = 
-          DB_variables_react() %>% 
-          filter(perim %in% c(input$select_perim)) %>% 
-          pull(title) %>% 
+          DB_variables_react() %&gt;% 
+          filter(perim %in% c(input$select_perim)) %&gt;% 
+          pull(title) %&gt;% 
           unique()
         
         if(!input$select_title %in% title_select){
@@ -157,18 +170,18 @@ shinyServer(function(input, output, session) {
           title_selected = input$select_title
         }
         
-        updateSelectizeInput(session, "select_title", 
+        updateSelectizeInput(session, &quot;select_title&quot;, 
                              choices = title_select, 
                              selected = title_selected)
        
         
       }else{
-        print("select_title null")
-        updateSelectizeInput(session, "select_title", choices = "")
+        print(&quot;select_title null&quot;)
+        updateSelectizeInput(session, &quot;select_title&quot;, choices = &quot;&quot;)
       }
     }else{
-      print("select_title null")
-      updateSelectizeInput(session, "select_title", choices = "")
+      print(&quot;select_title null&quot;)
+      updateSelectizeInput(session, &quot;select_title&quot;, choices = &quot;&quot;)
     }
    
   })
@@ -176,25 +189,25 @@ shinyServer(function(input, output, session) {
   # 
   # MAJ du titre en fonction de la variable indiquée et inversement ####
   #
-  dico_table_react <- reactiveVal()
+  dico_table_react &lt;- reactiveVal()
   
   observe({
     
-    dico_table = DB_variables_react() %>%
-      select(perim, var, title) %>%
+    dico_table = DB_variables_react() %&gt;%
+      select(perim, var, title) %&gt;%
       dplyr::rename(`Périmètre` = perim,
                     Variable = var,
-                    Titre = title) %>% 
+                    Titre = title) %&gt;% 
       as.data.frame() 
     
-      dico_table = dico_table %>% 
-        DT::datatable(filter = "top", selection = "single") %>%
-        DT::formatStyle(0, lineHeight = '10px', target= 'row') 
+      dico_table = dico_table %&gt;% 
+        DT::datatable(filter = &quot;top&quot;, selection = &quot;single&quot;) %&gt;%
+        DT::formatStyle(0, lineHeight = &#39;10px&#39;, target= &#39;row&#39;) 
     
     
     dico_table_react(dico_table)
     
-    output$dico_home_page <- DT::renderDT(dico_table_react()) 
+    output$dico_home_page &lt;- DT::renderDT(dico_table_react()) 
   })
   
   observeEvent({
@@ -208,27 +221,27 @@ shinyServer(function(input, output, session) {
     if(!is.null(row_selected)){
   
         title_selected = 
-          DB_variables_react() %>%
-          slice(row_selected) %>%
+          DB_variables_react() %&gt;%
+          slice(row_selected) %&gt;%
           pull(title)
 
           perim_selected =
-            DB_variables_react() %>%
-            slice(row_selected) %>%
+            DB_variables_react() %&gt;%
+            slice(row_selected) %&gt;%
             pull(perim)
 
           title_choices =
-            DB_variables_react() %>%
-            filter(perim == perim_selected) %>%
+            DB_variables_react() %&gt;%
+            filter(perim == perim_selected) %&gt;%
             pull(title)
 
-          updateSelectizeInput(session, "select_title",
+          updateSelectizeInput(session, &quot;select_title&quot;,
                                choices = title_choices,
                                selected = title_selected)
 
           updatePickerInput(
             session,
-            "select_perim",
+            &quot;select_perim&quot;,
             label = NULL,
             selected = perim_selected,
             choices = countries,
@@ -246,26 +259,26 @@ shinyServer(function(input, output, session) {
   },
   ignoreNULL = FALSE, ignoreInit = FALSE,
   handlerExpr = {
-    cat(" ", file = stderr())
-    print("start  ")
+    print(&quot; &quot;)
+    print(&quot;start  &quot;)
     
     Print(input$tabs)
     Print(input$select_perim)
     Print(input$select_title)
     
-    perim <- input$select_perim
+    perim &lt;- input$select_perim
       
       list_tab2 = list()
       
   
-      if(input$select_perim != ""){
-      if(input$select_title != ""){
+      if(input$select_perim != &quot;&quot;){
+      if(input$select_title != &quot;&quot;){
         
-        var = DB_variables_react() %>% 
-          dplyr::filter(title %in% c(input$select_title)) %>% 
-          filter(perim %in% c(input$select_perim)) %>% 
-          slice(1) %>% 
-          pull(var) %>% 
+        var = DB_variables_react() %&gt;% 
+          dplyr::filter(title %in% c(input$select_title)) %&gt;% 
+          filter(perim %in% c(input$select_perim)) %&gt;% 
+          slice(1) %&gt;% 
+          pull(var) %&gt;% 
           unique() 
       
         
@@ -275,18 +288,18 @@ shinyServer(function(input, output, session) {
         Print(var)
         
         
-        pattern_searched = paste0(c("gg_plot", "gg_html"), ".rds", collapse = "|")
+        pattern_searched = paste0(c(&quot;gg_plot&quot;, &quot;gg_html&quot;), &quot;.rds&quot;, collapse = &quot;|&quot;)
         path_var = file.path(link_results, perim, var)
         
           list_file_var = file.path(path_var, list.files(path_var, pattern = pattern_searched))
-          list_file_pdf = file.path(path_var, list.files(path_var, pattern = "pdf"))
+          list_file_pdf = file.path(path_var, list.files(path_var, pattern = &quot;pdf&quot;))
         
           file_to_load = list_file_var[1]     
           
              # 
              # recherche du pdf correspondant au graphique ####
              # 
-             if(length(list_file_pdf) > 0){
+             if(length(list_file_pdf) &gt; 0){
                file_gg(list_file_pdf[1])
              }else{
                file_gg(NULL)
@@ -298,14 +311,12 @@ shinyServer(function(input, output, session) {
           
              Print(file_to_load)
            
-            if(!is.na(file_to_load)){
-            
               gg = readRDS(file_to_load)
               
               gg_react[[var]] = gg
               current_plot(gg)
               
-              var_ly = paste0(var, "_ly")
+              var_ly = paste0(var, &quot;_ly&quot;)
               
               Print(input$interact_plot)
               
@@ -313,35 +324,35 @@ shinyServer(function(input, output, session) {
               
               if(!is.null(input$interact_plot)){
                 if(input$interact_plot == TRUE){
-                  if("ggplot" %in% class(gg)){
+                  if(&quot;ggplot&quot; %in% class(gg)){
                     get_interactive_plot = TRUE
                   }
                 }
               }
               if(get_interactive_plot == TRUE){
                 
-                gg_ly =  plotly::ggplotly(gg) %>% 
-                  layout(legend = list(orientation = "h",   # show entries horizontally
-                                       xanchor = "center",  # use center of legend as anchor
+                gg_ly =  plotly::ggplotly(gg) %&gt;% 
+                  layout(legend = list(orientation = &quot;h&quot;,   # show entries horizontally
+                                       xanchor = &quot;center&quot;,  # use center of legend as anchor
                                        x = 0.5,
-                                       yanchor = "bottom",
+                                       yanchor = &quot;bottom&quot;,
                                        y = -0.6
                                        ))  
                 # subtitle
-                # if(!is.null(gg$labels$subtitle) & !is.null(gg$labels$title)){
+                # if(!is.null(gg$labels$subtitle) &amp; !is.null(gg$labels$title)){
                   # subtitle_ly = paste0(gg$labels$title,
-                  #                   '<br>', '<sup>',
-                  #                   gsub("\\\n", "", gg$labels$subtitle),
-                  #                   '</sup>')
-                  # subtitle_ly = paste0(gsub("\\\n", "", gg$labels$subtitle))
+                  #                   &#39;&lt;br&gt;&#39;, &#39;&lt;sup&gt;&#39;,
+                  #                   gsub(&quot;\\\n&quot;, &quot;&quot;, gg$labels$subtitle),
+                  #                   &#39;&lt;/sup&gt;&#39;)
+                  # subtitle_ly = paste0(gsub(&quot;\\\n&quot;, &quot;&quot;, gg$labels$subtitle))
                                     
-                  # gg_ly = gg_ly %>% 
+                  # gg_ly = gg_ly %&gt;% 
                   #   layout(
                   #     # title = list(text = title_ly),
                   #     annotations=list(text = subtitle_ly,
-                  #                      xref="paper",
+                  #                      xref=&quot;paper&quot;,
                   #                      x=0.5,
-                  #                      yanchor = "bottom",
+                  #                      yanchor = &quot;bottom&quot;,
                   #                      y = -0.2,
                   #                      showarrow=FALSE)
                   #          )
@@ -352,10 +363,10 @@ shinyServer(function(input, output, session) {
                 gg_react[[var_ly]] = gg
               }
             
-              # Print(names(reactiveValuesToList(gg_react)))
+              Print(names(reactiveValuesToList(gg_react)))
               
               link_code_file_ = gg$link_code_file
-              link_code_file_ = gsub(link_app, ".", link_code_file_)
+              link_code_file_ = gsub(link_app, &quot;.&quot;, link_code_file_)
               
               var_name(var)
               link_code_file(link_code_file_)
@@ -366,69 +377,68 @@ shinyServer(function(input, output, session) {
               # mise a jour du graphique a l ecran 
               # 
               
-              var_gg = paste0(var, "_gg")
-              var_ly_gg = paste0(var_ly, "_gg")
-              # output[[var_gg]] <- renderPlot({gg_react[[var]]})
+              var_gg = paste0(var, &quot;_gg&quot;)
+              var_ly_gg = paste0(var_ly, &quot;_gg&quot;)
+              # output[[var_gg]] &lt;- renderPlot({gg_react[[var]]})
               
               # 
-              # creation d'un onglet/tab avec le graphique 
+              # creation d&#39;un onglet/tab avec le graphique 
               # 
               Print(var)
              
               
-              if("ggplot" %in% class(gg)){
+              if(&quot;ggplot&quot; %in% class(gg)){
                 
                 Print(class(gg))
-                output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                output[[var_gg]] &lt;- renderPlot({gg_react[[var]]})
                 
-                output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
+                output[[var_ly_gg]] &lt;- renderPlotly({gg_react[[var_ly]]})
                 
                 if(input$interact_plot == FALSE){
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = &quot;Graphique&quot;,
                                                               plotOutput(var_gg,
-                                                                         width = "100%"
-                                                                         , height = "80vh"
+                                                                         width = &quot;100%&quot;
+                                                                         , height = &quot;80vh&quot;
                                                               ))
                 }else{
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = &quot;Graphique&quot;,
                                                               plotlyOutput(var_ly_gg,
-                                                                           width = "100%"
-                                                                           , height = "80vh"
+                                                                           width = &quot;100%&quot;
+                                                                           , height = &quot;80vh&quot;
                                                               ))
                 }
                 
-              }else if("highchart" %in% class(gg)){
+              }else if(&quot;highchart&quot; %in% class(gg)){
                 Print(class(gg))
                 
                 
                 
-                if("highcharter" %in% pkg[,1]){
+                if(&quot;highcharter&quot; %in% pkg[,1]){
                   
-                  output[[var_gg]] <- renderHighchart({gg_react[[var]]})
+                  output[[var_gg]] &lt;- renderHighchart({gg_react[[var]]})
                   
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = &quot;Graphique&quot;,
                                                               highchartOutput(var_gg,
-                                                                              width = "100%"
-                                                                              , height = "80vh"
+                                                                              width = &quot;100%&quot;
+                                                                              , height = &quot;80vh&quot;
                                                               ))
                 }
                
                 
               }
-      }
               
-                list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
+                list_file_code = file.path(path_var, list.files(path_var, pattern = &quot;code.html&quot;))
                 page_code(list_file_code[1])
                 
                 Print(list_file_code)
                 
                 
-                if(length(list_file_code) > 0){
+                if(length(list_file_code) &gt; 0){
                   
                   code_file = list_file_code[1]
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Code",
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = &quot;Code&quot;,
                                                               box(
-                                                                width = "100%",
+                                                                width = &quot;100%&quot;,
                                                                 includeHTML(list_file_code[1])
                                                               ))
 
@@ -438,24 +448,24 @@ shinyServer(function(input, output, session) {
       }
       
       list_tab2[[length(list_tab2)+1]] =
-        tabPanel(title = "Catalogue",
+        tabPanel(title = &quot;Catalogue&quot;,
                  box(
-                   width = "100%", 
+                   width = &quot;100%&quot;, 
                    
-                   DT::dataTableOutput("dico_home_page",
-                                       width = "100%"
-                                       , height = "75vh"
+                   DT::dataTableOutput(&quot;dico_home_page&quot;,
+                                       width = &quot;100%&quot;
+                                       , height = &quot;75vh&quot;
                    ) 
                    
                    ))
         
-        output$list_tab <- renderUI({
-          do.call(tabsetPanel, c(list_tab2, id = 'tabs'))
+        output$list_tab &lt;- renderUI({
+          do.call(tabsetPanel, c(list_tab2, id = &#39;tabs&#39;))
         })
       
       
 
-      print("end  ")
+      print(&quot;end  &quot;)
 
       })
 
@@ -476,28 +486,28 @@ shinyServer(function(input, output, session) {
       
       gg = current_plot()
       
-      if("ggplot" %in% class(gg)){
+      if(&quot;ggplot&quot; %in% class(gg)){
         if(length(gg$data) != 0){
-          data_current_plot <- gg$data
+          data_current_plot &lt;- gg$data
         }else{
-          if (length(gg$layers) >= 2) {
-            if (!is.null(gg$layers[[1]]$data) & !is.null(gg$layers[[2]]$data)) {
-              data_current_plot <-
+          if (length(gg$layers) &gt;= 2) {
+            if (!is.null(gg$layers[[1]]$data) &amp; !is.null(gg$layers[[2]]$data)) {
+              data_current_plot &lt;-
                 plyr::rbind.fill(gg$layers[[1]]$data, gg$layers[[2]]$data)
               
             }
           }
         }
       }
-      if("highchart" %in% class(gg)){
+      if(&quot;highchart&quot; %in% class(gg)){
         
-        n_series = length(gg[["x"]][["hc_opts"]][["series"]])
-        if(n_series > 0){
+        n_series = length(gg[[&quot;x&quot;]][[&quot;hc_opts&quot;]][[&quot;series&quot;]])
+        if(n_series &gt; 0){
           serie_id = 1
           list_df = list()
           
           for(serie_id in 1:n_series){
-            data_list = gg[["x"]][["hc_opts"]][["series"]][[serie_id]][["data"]]
+            data_list = gg[[&quot;x&quot;]][[&quot;hc_opts&quot;]][[&quot;series&quot;]][[serie_id]][[&quot;data&quot;]]
             
             data_raw_hc = unlist(flatten(data_list))
             
@@ -510,8 +520,8 @@ shinyServer(function(input, output, session) {
           
           data_hc = bind_rows(list_df)
           
-          data_hc = data_hc %>% 
-            mutate(time2 = as.POSIXct(time/1000, origin  = "1970-01-01"))
+          data_hc = data_hc %&gt;% 
+            mutate(time2 = as.POSIXct(time/1000, origin  = &quot;1970-01-01&quot;))
           
         }else{
           data_hc = data.frame()
@@ -519,7 +529,7 @@ shinyServer(function(input, output, session) {
         data_current_plot = data_hc
       }
       
-      if(exists("data_current_plot")){
+      if(exists(&quot;data_current_plot&quot;)){
         data_ = data_current_plot
       }else{
         data_ = NULL
@@ -527,27 +537,27 @@ shinyServer(function(input, output, session) {
      
     
       if(!is.null(data_)){
-        if(all(names(data_) %in% c("time", "value", "label"))){
-          data_ = data_ %>% 
-            tidyr::pivot_wider(names_from = "label", values_from = "value")
+        if(all(names(data_) %in% c(&quot;time&quot;, &quot;value&quot;, &quot;label&quot;))){
+          data_ = data_ %&gt;% 
+            tidyr::pivot_wider(names_from = &quot;label&quot;, values_from = &quot;value&quot;)
         }
       }
       
-      if(exists("file_gg")){
+      if(exists(&quot;file_gg&quot;)){
         file_gg_ = file_gg()
       }else{
         file_gg_ = NULL
       }
       
       if(!is.null(data_)){
-        if(any(class(data_) == "data.frame")){
-          output$downloadData <- downloadHandler(
+        if(any(class(data_) == &quot;data.frame&quot;)){
+          output$downloadData &lt;- downloadHandler(
             filename = function() {
               if(!is.null(file_gg_)){
                 file_gg_name = basename(file_gg_)
-                paste("data_", gsub(".pdf","", file_gg_name),"_", gsub("-|:| |CET","", Sys.time()), ".xlsx", sep="")
+                paste(&quot;data_&quot;, gsub(&quot;.pdf&quot;,&quot;&quot;, file_gg_name),&quot;_&quot;, gsub(&quot;-|:| |CET&quot;,&quot;&quot;, Sys.time()), &quot;.xlsx&quot;, sep=&quot;&quot;)
               }else{
-                paste("data_", gsub("-|:| |CET","", Sys.time()), ".xslx", sep="")
+                paste(&quot;data_&quot;, gsub(&quot;-|:| |CET&quot;,&quot;&quot;, Sys.time()), &quot;.xslx&quot;, sep=&quot;&quot;)
               }
             },
             content = function(file) {
@@ -561,14 +571,14 @@ shinyServer(function(input, output, session) {
     # 
     # graphique pour le bouton téléchargement ####
     # 
-    if(exists("file_gg")){
+    if(exists(&quot;file_gg&quot;)){
       if(!is.null(file_gg_)){
         file_gg_ = file_gg()
         
-          output$downloadPlot <- downloadHandler(
+          output$downloadPlot &lt;- downloadHandler(
             filename = function() {
               file_gg_name = basename(file_gg_)
-              paste("plot_", gsub(".pdf","", file_gg_name),"_", gsub("-|:| |CET","", Sys.time()), ".pdf", sep="")
+              paste(&quot;plot_&quot;, gsub(&quot;.pdf&quot;,&quot;&quot;, file_gg_name),&quot;_&quot;, gsub(&quot;-|:| |CET&quot;,&quot;&quot;, Sys.time()), &quot;.pdf&quot;, sep=&quot;&quot;)
             },
             content = function(file) {
               file.copy(file_gg_, file)
@@ -586,9 +596,9 @@ shinyServer(function(input, output, session) {
   observe({
     list_graph_cahier = lapply(input$cahier, function(x) gg_react[[x]])
     
-    output$downloadCahier <- downloadHandler(
+    output$downloadCahier &lt;- downloadHandler(
       filename = function() {
-        paste("presentation_", gsub("-|:| |CET","", Sys.time()), ".pdf", sep="")
+        paste(&quot;presentation_&quot;, gsub(&quot;-|:| |CET&quot;,&quot;&quot;, Sys.time()), &quot;.pdf&quot;, sep=&quot;&quot;)
       },
       content = function(file) {
         rmarkdown::render(input = cahier_file,
@@ -600,4 +610,5 @@ shinyServer(function(input, output, session) {
   })
 
 }
-)
+)</code></pre>
+
