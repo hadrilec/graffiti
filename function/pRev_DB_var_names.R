@@ -48,6 +48,8 @@ update_DB_variable <- function(perim = 'all',
         gg_plot_file = list.files(path_folder_var, 
                                   pattern = paste0(c("_gg_plot.rds","_gg_html.rds"),  collapse = "|"))
         
+        png_metadata_file = list.files(path_folder_var,  pattern = "_png.rds$")
+        
         if(length(estim_file) > 0){
           estim_file_path = file.path(path_folder_var, estim_file)
           
@@ -116,14 +118,20 @@ update_DB_variable <- function(perim = 'all',
             
           }
           
-        } 
+        }
+        
+        if(length(png_metadata_file) > 0){
+          png_metadata = readRDS(file.path(path_folder_var, png_metadata_file))
+          var_title = png_metadata[1, "title"]
+          gg_code_file = png_metadata[1, "file"]
+        }
         
       }
       list_df[[length(list_df)+1]] = data.frame(perim = as.character(folder),
                                                 var = as.character(var),
                                                 title = as.character(var_title),
                                                 run_time = as.numeric(as.character(gg_run_time)),
-                                                file = gg_code_file,
+                                                file = as.character(gg_code_file),
                                                 stringsAsFactors = FALSE)
     }
   }

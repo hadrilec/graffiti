@@ -267,6 +267,13 @@ shinyServer(function(input, output, session) {
           slice(1) %>% 
           pull(var) %>% 
           unique() 
+        
+        var_file = DB_variables_react() %>% 
+          dplyr::filter(title %in% c(input$select_title)) %>% 
+          filter(perim %in% c(input$select_perim)) %>% 
+          slice(1) %>% 
+          pull(file) %>% 
+          unique() 
       
         
         # 
@@ -283,6 +290,7 @@ shinyServer(function(input, output, session) {
         
           file_to_load = list_file_var[1]     
           
+         
              # 
              # recherche du pdf correspondant au graphique ####
              # 
@@ -417,6 +425,34 @@ shinyServer(function(input, output, session) {
               }
       }
               
+          # 
+          # AJOUT DU GRAPHIQUE PNG EXISTANT
+          # 
+          if(str_detect(var_file, ".png$")){
+            if(file.exists(var_file)){
+              
+              output$Image <- renderImage({
+
+                filename <- normalizePath(var_file)
+
+                # Return a list containing the filename and alt text
+                list(src = filename,
+                     alt = "test")
+
+              }, deleteFile = FALSE)
+              
+              list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                         box(
+                                                           width = "100%",
+                                                           imageOutput("Image")
+                                                           # plotOutput("Image")
+                                                         ))
+              
+              
+            }
+          }
+          
+          
                 list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
                 page_code(list_file_code[1])
                 

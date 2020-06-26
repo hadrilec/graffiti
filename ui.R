@@ -141,6 +141,12 @@ shinyUI(
     dashboardBody(
       # fluidRow()
       # useShinyjs(),
+      
+      # tags$head(tags$style(
+      #   type="text/css",
+      #   "#Image img {max-width: 100%; width: 100%; height: auto}"
+      # )),
+      
       tabItems(
         tabItem(tabName = "8",
              fluidRow(

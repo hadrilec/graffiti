@@ -42,9 +42,11 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   file_name = paste0(folder_name, "_gg_plot.rds")
   # file_name = paste0(folder_name, "_gg_plot.RData")
   file_name_pdf = paste0(folder_name, "_gg_plot.pdf")
+  
   file_path = file.path(path_resultats_perim_folder, file_name)
   file_path_pdf = file.path(path_resultats_perim_folder, file_name_pdf)
   timenow = gsub("-| |:|CET", "", Sys.time())
+  
   # if (file.exists(file_path_pdf)) {
   #   if (file.opened(file_path_pdf)) {
   #     file_path_pdf = file.path(path_resultats_perim_folder, 
