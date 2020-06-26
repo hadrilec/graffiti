@@ -4,10 +4,7 @@ library(rsdmx)
 library(ggthemes)
 library(grid)
 library(lubridate)
-library(eurostat)
-library(fredr)
-library(dplyr)
-library(ggplot2)
+library(tidyverse)
 library(Quandl)
 library(zoo)
 
@@ -117,6 +114,7 @@ graph_yc = ggplot(data = data_f_, aes(x = x, y = value, colour = perim)) +
   labs(subtitle = graph_subtitle, x= "Maturité en années") + 
   scale_y_continuous( sec.axis = dup_axis(),
                       breaks = yaxis_breaks,
+                      limits = c(min(yaxis_breaks), max(yaxis_breaks)),
                       labels = function(x) paste0(x, "%")) +
   scale_x_continuous(breaks = xaxis_breaks) +
   theme_stata() +
@@ -126,7 +124,7 @@ graph_yc = ggplot(data = data_f_, aes(x = x, y = value, colour = perim)) +
     axis.text.y  = element_text(angle = 0, hjust = 1),
     # axis.title.x = element_blank(),
     text = element_text(size = 15),
-    axis.title.y = element_blank(),
+    # axis.title.y = element_blank(),
     legend.title = element_blank(),
     legend.position = "bottom"
   ) 
