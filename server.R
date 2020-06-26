@@ -387,7 +387,8 @@ shinyServer(function(input, output, session) {
               if("ggplot" %in% class(gg)){
                 
                 Print(class(gg))
-                output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                # output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                output[[var_gg]] <- renderPlot({gg})
                 
                 output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
                 
