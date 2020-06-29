@@ -1,0 +1,65 @@
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>library(eurostat)
+library(tidyverse)
+library(lubridate)
+
+time_start = Sys.time()
+
+countries_selected = c(&quot;EU28&quot;, &quot;EA19&quot;, &quot;FR&quot;, &quot;DE&quot;, &quot;IT&quot;, &quot;ES&quot;, &quot;UK&quot;, &quot;NL&quot;, &quot;PL&quot;)
+
+# chargement des données du chomage depuis eurostat
+df = get_eurostat(&quot;tps00203&quot;,
+                  filters = list(geo = countries_selected,
+                                 sex = &quot;T&quot;,
+                                 age = &quot;Y15-74&quot;,
+                                 unit = &quot;PC_ACT&quot;))
+
+# la fonction label_eurostat peut être utilisée pour obtenir des descriptions de variables
+
+# valeurs disponibles pour chaque colonne
+list_age = df %&gt;% distinct(age)
+list_sex = df %&gt;% distinct(sex)
+list_unit = df %&gt;% distinct(unit)
+
+# selection des données
+# les filtres ci-dessous ne sont nécessaires que si la table initiale n&#39;est pas filtrée
+# cad si df = get_eurostat(&quot;tps00203&quot;)
+
+data = df %&gt;% 
+  filter(age == &quot;Y15-74&quot;) %&gt;% #population agée de 12 à 64 ans
+  filter(sex == &quot;T&quot;) %&gt;% #hommes et femmes
+  filter(unit == &quot;PC_ACT&quot;) %&gt;%  
+  filter(geo %in% countries_selected) %&gt;% #sélection des pays/zones
+  filter(time &gt;= &quot;2002-01-01&quot;) #sélection de la période
+
+time_now = with_tz(now(), &quot;Europe/Paris&quot;)
+sous_titre = sprintf(&quot;Source : Eurostat, Fait le : %s \nDernier point : %s&quot;, time_now, max(data$time))
+titre = &quot;Taux de chômage en Europe&quot;
+
+gg_pop = 
+ggplot(data, aes(x = time, y = values)) + 
+  facet_wrap(~geo, scales = &quot;free&quot;) +
+  geom_line() + 
+  # geom_point() + 
+  ggtitle(titre) +
+  labs(subtitle = sous_titre) 
+
+time_end = Sys.time()
+run_time = round(difftime(time_end, time_start, units = &quot;secs&quot;))
+
+export_graph(gg_pop, folder_name = &quot;chomage_europe&quot;,
+             # create_code_html =  TRUE,
+             perim = &quot;ZE&quot;, update = T, run_time = run_time)</code></pre>
+
