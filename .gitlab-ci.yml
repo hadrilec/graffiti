@@ -1,6 +1,7 @@
 stages:
     - build
     - deploy
+    - generateGraphs
 
 variables:
   CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj"
@@ -27,3 +28,11 @@ deploy:
   environment:
     name: prod
     url: http://dataviz-conj.dev.innovation.insee.eu
+
+generateGraphs:
+    stage: generateGraphs
+    image: ubuntu  
+    script:
+      - env
+    only:
+      - schedules
