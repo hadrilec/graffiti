@@ -1,8 +1,6 @@
 stages:
-    - generateGraphs
     - build
     - deploy
-    
 
 variables:
   CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj"
@@ -10,8 +8,6 @@ variables:
 package:
   # Use stage build here, so the pages job may later pickup the created site.
   stage: build
-  except:
-    - schedules
   tags:
     - maven
   script:
@@ -28,16 +24,6 @@ deploy:
     - 'curl -X POST http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID/restart?force=true'
   only:
     - master
-  except:
-    - schedules
   environment:
     name: prod
     url: http://dataviz-conj.dev.innovation.insee.eu
-
-generateGraphs:
-    stage: generateGraphs
-    image: ubuntu  
-    script:
-      - env
-    only:
-      - schedules
