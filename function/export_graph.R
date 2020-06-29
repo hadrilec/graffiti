@@ -1,6 +1,6 @@
 export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
-                         width = 15, height = 10, update = FALSE) 
+                         width = 15, height = 10, update = FALSE, data_format = "rdata") 
 {
   
   if (missing(folder_name)) {
@@ -39,8 +39,16 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
       dir.create(link, "0777")
     }
   }
-  file_name = paste0(folder_name, "_gg_plot.rds")
-  # file_name = paste0(folder_name, "_gg_plot.RData")
+  
+  if(data_format == "rds"){
+    file_name = paste0(folder_name, "_gg_plot.rds")
+  }else if (data_format == "rdata"){
+    file_name = paste0(folder_name, "_gg_plot.RData")
+  }else{
+    stop("wrong data format")
+  }
+  
+  # 
   file_name_pdf = paste0(folder_name, "_gg_plot.pdf")
   
   file_path = file.path(path_resultats_perim_folder, file_name)
@@ -125,6 +133,13 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   plot$run_time <- run_time
   gg = plot
   # save(gg, file = file_path)
-  saveRDS(gg, file = file_path)
+  
+  
+  if(data_format == "rds"){
+    saveRDS(gg, file = file_path)
+  }else if (data_format == "rdata"){
+    save(gg, file = file_path)
+  }
+  
 }
 

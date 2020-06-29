@@ -282,7 +282,8 @@ shinyServer(function(input, output, session) {
         Print(var)
         
         
-        pattern_searched = paste0(c("gg_plot", "gg_html"), ".rds", collapse = "|")
+        # pattern_searched = paste0(c("gg_plot", "gg_html"), ".rds", collapse = "|")
+        pattern_searched = paste0(c("gg_plot", "gg_html"), paste0(".", data_format), collapse = "|")
         path_var = file.path(link_results, perim, var)
         
           list_file_var = file.path(path_var, list.files(path_var, pattern = pattern_searched))
@@ -308,7 +309,9 @@ shinyServer(function(input, output, session) {
            
             if(!is.na(file_to_load)){
             
-              gg = readRDS(file_to_load)
+              # gg = readRDS(file_to_load)
+              
+              load(file_to_load)
               
               gg_react[[var]] = gg
               current_plot(gg)

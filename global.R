@@ -27,6 +27,9 @@ sessionInfo()
 # setwd(link_app)
 # 
 
+# data_format = "rds"
+data_format = "RData"
+
 chemin_prev = ""
 link_results =  "./data/resultats"
 
