@@ -20,7 +20,7 @@ source("./function/readSDMX2.R")
 pkg = installed.packages()
 
 Print(getwd())
-sessionInfo()
+Print(sessionInfo()$R.version$version.string)
 
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")

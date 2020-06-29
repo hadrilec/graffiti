@@ -1,5 +1,9 @@
 time_start = Sys.time()
 
+library(tidyverse)
+library(eia)
+library(lubridate)
+
 electr_ = eia_child_cats(2122628)
 series_california = eia_cats(3389936)
 
