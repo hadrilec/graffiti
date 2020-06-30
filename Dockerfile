@@ -1,6 +1,6 @@
 # Dockerfile
 # Utilisation de l'image shiny "perso"
-FROM docker-registry.beta.innovation.insee.eu/conjoncture1/image_dataviz_conj:latest
+FROM docker-registry.beta.innovation.insee.eu/conjoncture1/image-dataviz-conj:latest
 
 # Ajout de l'application
 ADD ./*.R /srv/shiny-server/
