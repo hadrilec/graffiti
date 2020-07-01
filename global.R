@@ -24,7 +24,7 @@ Print(sessionInfo()$R.version$version.string)
 
 #bucketlist()
 
-bucket_data = get_bucket("compte-1360")
+bucket_data = get_bucket("groupe-1360")
 Print(bucket_data)
 
 # options(shiny.reactlog=TRUE)
