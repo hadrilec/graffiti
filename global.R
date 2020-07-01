@@ -1,4 +1,3 @@
-
 link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
 
 if(file.exists(link_app)){
@@ -21,6 +20,12 @@ pkg = installed.packages()
 
 Print(getwd())
 Print(sessionInfo()$R.version$version.string)
+
+
+#bucketlist()
+
+bucket_data = get_bucket("compte-1360")
+Print(bucket_data)
 
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")
