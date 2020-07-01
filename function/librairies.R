@@ -6,6 +6,8 @@ library(shinyjs)
 library(shinyflags)
 # library(shinycssloaders)
 # library(rhandsontable)
+library(aws.s3)
+
 library(DT)
 
 library(tidyverse)
