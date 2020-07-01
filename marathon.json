@@ -1,14 +1,14 @@
 {
   "id": "conjoncture1/dataviz",
   "instances": 1,
-  "cpus": 1,
+  "cpus": 0.2,
   "mem": 2048,
   "disk": 0,
   "gpus": 0,
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj",
+      "image": "docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj",
       "network": "BRIDGE",
       "portMappings": [
         {
@@ -42,5 +42,10 @@
     "HAPROXY_0_BACKEND_HTTP_HEALTHCHECK_OPTIONS": "  option  httpchk GET /\n  timeout check {healthCheckTimeoutSeconds}s\n"
 
   },
-  "requirePorts": true
+  "env":{
+      "AWS_ACCESS_KEY_ID": "$ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY": "$SECRET_ACCESS_KEY",
+      "AWS_DEFAULT_REGION": "us-east-1",
+      "AWS_S3_ENDPOINT": "minio.stable.innovation.insee.eu"
+  }
 }
