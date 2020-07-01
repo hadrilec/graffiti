@@ -3,7 +3,7 @@ stages:
     - deploy
 
 variables:
-  CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj"
+  CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj"
 
 package:
   # Use stage build here, so the pages job may later pickup the created site.
@@ -20,10 +20,7 @@ deploy:
     - maven
   script:
     - 'APP_ID=`cat marathon.json | jq .id -r`'
-    - 'curl -d@marathon.json -H "Content-Type: application/json" -X PUT http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID?force=true'
+    - 'cat marathon.json | envsubst | curl -d@- -H "Content-Type: application/json" -X PUT http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID?force=true'
     - 'curl -X POST http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID/restart?force=true'
   only:
     - master
-  environment:
-    name: prod
-    url: http://dataviz-conj.dev.innovation.insee.eu
