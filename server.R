@@ -311,7 +311,23 @@ shinyServer(function(input, output, session) {
             
               # gg = readRDS(file_to_load)
               
-              load(file_to_load)
+              # 
+              minio_file_path = file.path(perim, var, paste0(var, "_gg_plot"))
+              
+              gg = try(s3read_using(FUN = readRDS,
+                                object = minio_file_path,
+                                bucket = "groupe-1360",
+                                opts = list("use_https" = F, "region" = "")), silent = T)
+              
+              if(!"try-error" %in% class(gg)){
+                read_message = "minio"
+              }else{
+                load(file_to_load)
+                read_message = "app"
+              }
+              
+              Print(read_message)
+              # Print(class(gg))
               
               gg_react[[var]] = gg
               current_plot(gg)

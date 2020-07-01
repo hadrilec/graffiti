@@ -1,6 +1,6 @@
 export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
-                         width = 15, height = 10, update = FALSE, data_format = "rdata") 
+                         width = 15, height = 10, update = FALSE, data_format = "rds") 
 {
   
   if (missing(folder_name)) {
@@ -140,6 +140,14 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   }else if (data_format == "rdata"){
     save(gg, file = file_path)
   }
+  
+  minio_file_path = file.path(perim, folder_name, paste0(folder_name, "_gg_plot"))
+  
+  print(minio_file_path)
+  
+  s3write_using(gg, FUN = saveRDS,
+                bucket = "groupe-1360", object = minio_file_path,
+                opts = list("use_https" = F, "region" = ""))
   
 }
 
