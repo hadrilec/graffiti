@@ -8,7 +8,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "docker-registry.beta.innovation.insee.eu/xlapdo/dataviz-conj",
+      "image": "docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj",
       "network": "BRIDGE",
       "portMappings": [
         {
@@ -42,5 +42,11 @@
     "HAPROXY_0_BACKEND_HTTP_HEALTHCHECK_OPTIONS": "  option  httpchk GET /\n  timeout check {healthCheckTimeoutSeconds}s\n"
 
   },
+  "env":{
+      "AWS_ACCESS_KEY_ID": "compte-1360",
+      "AWS_SECRET_ACCESS_KEY": "DFzud5634fdniaqdlkr"
+
+  }
+  ,
   "requirePorts": true
 }
