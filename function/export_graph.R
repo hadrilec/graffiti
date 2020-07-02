@@ -145,7 +145,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   
   print(minio_file_path)
   
-  s3write_using(gg, FUN = saveRDS,
+  aws.s3::s3write_using(gg, FUN = saveRDS,
                 bucket = "groupe-1360", object = minio_file_path,
                 opts = list("use_https" = F, "region" = ""))
   
