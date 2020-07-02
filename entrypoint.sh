@@ -1,5 +1,5 @@
 #!/bin/bash
-echo " \
+echo -e " \
 \n# Configure aws \
 \nAWS_S3_ENDPOINT=$AWS_S3_ENDPOINT \
 \nAWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
