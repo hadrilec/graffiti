@@ -24,7 +24,7 @@ Print(sessionInfo()$R.version$version.string)
 
 #bucketlist()
 
-bucket_data = get_bucket("groupe-1360")
+bucket_data = get_bucket("groupe-1360", use_https = F, region = "")
 Print(bucket_data)
 
 # options(shiny.reactlog=TRUE)
