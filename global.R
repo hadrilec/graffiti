@@ -32,7 +32,7 @@ print(var_env_tbl)
 #bucketlist()
 
 bucket_data = get_bucket("groupe-1360", use_https = F, region = "")
-Print(bucket_data)
+print(bucket_data)
 
 # options(shiny.reactlog=TRUE)
 # shiny::runApp(link_app, display.mode="showcase")
