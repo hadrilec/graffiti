@@ -21,7 +21,14 @@ pkg = installed.packages()
 Print(getwd())
 Print(sessionInfo()$R.version$version.string)
 
-
+var_env = as.data.frame(t(as.data.frame(as.list(Sys.getenv()))))
+var_env[,"var"] = as.character(rownames(var_env))
+rownames(var_env) = NULL
+names(var_env) = c("value", "var")
+var_env = var_env[,c("var", "value")]
+var_env_tbl = as_tibble(var_env)
+print(var_env)
+print(var_env_tbl)
 #bucketlist()
 
 bucket_data = get_bucket("groupe-1360", use_https = F, region = "")
