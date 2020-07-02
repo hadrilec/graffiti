@@ -13,6 +13,7 @@ Print = function(x){
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/pRev_DB_var_names.R")
+source("./function/update_DB_variable.R")
 source("./function/export_graph.R")
 source("./function/readSDMX2.R")
 
@@ -36,14 +37,8 @@ if(!"try-error" %in% class(bucket_data)){
   print(bucket_data)
 }
 
-
-# options(shiny.reactlog=TRUE)
-# shiny::runApp(link_app, display.mode="showcase")
-# setwd(link_app)
-# 
-
-# data_format = "rds"
-data_format = "RData"
+# data_format = "RData"
+data_format = "rds"
 
 chemin_prev = ""
 link_results =  "./data/resultats"

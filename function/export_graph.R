@@ -2,6 +2,11 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
                          width = 15, height = 10, update = FALSE, data_format = "rds") 
 {
+  file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+  if(file.exists(file_minio_credentials)){
+    source(file_minio_credentials)
+  }
+  
   
   if (missing(folder_name)) {
     folder_name = deparse(substitute(plot))
@@ -141,7 +146,7 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
     save(gg, file = file_path)
   }
   
-  minio_file_path = file.path(perim, folder_name, paste0(folder_name, "_gg_plot"))
+  minio_file_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_gg_plot"))
   
   print(minio_file_path)
   

@@ -22,6 +22,9 @@ library(plotly)
 library(RColorBrewer)
 library(ggthemes)
 
+library(png)
+library(jpeg)
+
 #library(fredr)
 library(eia)
 library(saqgetr)
