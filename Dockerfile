@@ -15,4 +15,10 @@ ADD ./data/ /srv/shiny-server/data/
 ADD ./code/ /srv/shiny-server/code/
 ADD ./function/ /srv/shiny-server/function/
 
+ADD ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/bin/shiny-server.sh"]
+
 #RUN R -e "install.packages(c('highcharter'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
