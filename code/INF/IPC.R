@@ -5,7 +5,7 @@ library(lubridate)
 
 time_start = Sys.time()
 
-IPC_data = rdbnomics::rdb("https://api.db.nomics.world/v22/series/INSEE/IPCH-2015?limit=1000&offset=0&q=&observations=1&align_periods=1&dimensions=%7B%7D")
+IPC_data = rdbnomics::rdb_by_api_link("https://api.db.nomics.world/v22/series/INSEE/IPCH-2015?limit=1000&offset=0&q=&observations=1&align_periods=1&dimensions=%7B%7D")
 
 list_NATURE = IPC_data %>% distinct(NATURE)
 list_CORRECTION = IPC_data %>% distinct(CORRECTION)
