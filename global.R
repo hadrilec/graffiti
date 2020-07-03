@@ -12,7 +12,6 @@ Print = function(x){
 
 source("./function/librairies.R")
 source("./function/api_key.R")
-# source("./function/pRev_DB_var_names.R")
 source("./function/update_DB_variable.R")
 source("./function/export_graph.R")
 source("./function/readSDMX2.R")
@@ -28,9 +27,8 @@ rownames(var_env) = NULL
 names(var_env) = c("value", "var")
 var_env = var_env[,c("var", "value")]
 var_env_tbl = as_tibble(var_env)
-print(var_env)
-print(var_env_tbl)
-#bucketlist()
+# print(var_env)
+# print(var_env_tbl)
 
 bucket_data = try(get_bucket("groupe-1360", use_https = F, region = ""))
 if(!"try-error" %in% class(bucket_data)){

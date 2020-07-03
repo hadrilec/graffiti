@@ -469,6 +469,7 @@ shinyServer(function(input, output, session) {
                 if(stringr::str_detect(minio_file_path, "_png$")){image_format = "png"}
                 if(stringr::str_detect(minio_file_path, "_jpg$")){image_format = "jpg"}
                 
+                if("magick" %in% pkg[,1]){
                   output$Image <- renderImage({
                     
                     # filename <- normalizePath(var_file)
@@ -479,7 +480,7 @@ shinyServer(function(input, output, session) {
                                  use_https = F, region = "") %>%
                       magick::image_read() %>%
                       magick::image_write(tempfile(fileext = paste0(".", image_format)),
-                                  format = image_format)
+                                          format = image_format)
                     
                     
                     # Return a list containing the filename and alt text
@@ -494,6 +495,9 @@ shinyServer(function(input, output, session) {
                                                                 imageOutput("Image")
                                                                 # plotOutput("Image")
                                                               ))
+                }
+               
+                  
                   
                   
                 # }
