@@ -15,7 +15,7 @@ title = "Transactions par carte bancaire"
 
 link_image = file.path(link_data, perimetre, folder_name, file_name)
 
-export_png(link_image = link_image,
+export_image(link_image = link_image,
            perim = perimetre,
            folder_name = folder_name,
            title = title)
