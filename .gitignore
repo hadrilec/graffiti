@@ -1,2 +1,4 @@
 .Rhistory
 /rsconnect/*
+/data/*.rds
+/data/*.xml
