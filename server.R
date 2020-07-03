@@ -268,19 +268,26 @@ shinyServer(function(input, output, session) {
           pull(var) %>% 
           unique() 
         
-        var_file = DB_variables_react() %>% 
-          dplyr::filter(title %in% c(input$select_title)) %>% 
-          filter(perim %in% c(input$select_perim)) %>% 
-          slice(1) %>% 
-          pull(file) %>% 
-          unique() 
+        # var_file = DB_variables_react() %>% 
+        #   dplyr::filter(title %in% c(input$select_title)) %>% 
+        #   filter(perim %in% c(input$select_perim)) %>% 
+        #   slice(1) %>% 
+        #   pull(file) %>% 
+        #   unique() 
       
+        minio_file_path = 
+          DB_variables_react() %>% 
+          dplyr::filter(title %in% c(input$select_title)) %>% 
+          dplyr::filter(perim %in% c(input$select_perim)) %>% 
+          slice(1) %>% 
+          pull(minio_path) %>% 
+          unique() 
         
         # 
         # chargement du graphique correspondant au tab selectionné ####
         # 
         Print(var)
-        
+        var_name(var)
         
         # pattern_searched = paste0(c("gg_plot", "gg_html"), ".rds", collapse = "|")
         pattern_searched = paste0(c("gg_plot", "gg_html"), paste0(".", data_format), collapse = "|")
@@ -307,61 +314,65 @@ shinyServer(function(input, output, session) {
           
              Print(file_to_load)
            
-            if(!is.na(file_to_load)){
+            # if(!is.na(file_to_load)){
             
               # gg = readRDS(file_to_load)
               
               # 
-              minio_file_path = file.path(perim, var, paste0(var, "_gg_plot"))
+              # minio_file_path = file.path("dataviz", perim, var, paste0(var, "_gg_plot"))
+         
+              Print(minio_file_path)
               
-              gg = try(s3read_using(FUN = readRDS,
-                                object = minio_file_path,
-                                bucket = "groupe-1360",
-                                opts = list("use_https" = F, "region" = "")), silent = T)
-              
-              if(!"try-error" %in% class(gg)){
-                read_message = "minio"
-              }else{
-                load(file_to_load)
-                read_message = "app"
-              }
-              
-              Print(read_message)
-              # Print(class(gg))
-              
-              gg_react[[var]] = gg
-              current_plot(gg)
-              
-              var_ly = paste0(var, "_ly")
-              
-              Print(input$interact_plot)
-              
-              get_interactive_plot = FALSE
-              
-              if(!is.null(input$interact_plot)){
-                if(input$interact_plot == TRUE){
-                  if("ggplot" %in% class(gg)){
-                    get_interactive_plot = TRUE
+              if(stringr::str_detect(minio_file_path, "_gg_plot$")){
+                
+                gg = try(s3read_using(FUN = readRDS,
+                                      object = minio_file_path,
+                                      bucket = "groupe-1360",
+                                      opts = list("use_https" = F, "region" = "")), silent = T)
+                
+                if(!"try-error" %in% class(gg)){
+                  read_message = "minio"
+                }else{
+                  load(file_to_load)
+                  read_message = "app"
+                }
+                
+                Print(read_message)
+                # Print(class(gg))
+                
+                gg_react[[var]] = gg
+                current_plot(gg)
+                
+                var_ly = paste0(var, "_ly")
+                
+                Print(input$interact_plot)
+                
+                get_interactive_plot = FALSE
+                
+                if(!is.null(input$interact_plot)){
+                  if(input$interact_plot == TRUE){
+                    if("ggplot" %in% class(gg)){
+                      get_interactive_plot = TRUE
+                    }
                   }
                 }
-              }
-              if(get_interactive_plot == TRUE){
-                
-                gg_ly =  plotly::ggplotly(gg) %>% 
-                  layout(legend = list(orientation = "h",   # show entries horizontally
-                                       xanchor = "center",  # use center of legend as anchor
-                                       x = 0.5,
-                                       yanchor = "bottom",
-                                       y = -0.6
-                                       ))  
-                # subtitle
-                # if(!is.null(gg$labels$subtitle) & !is.null(gg$labels$title)){
+                if(get_interactive_plot == TRUE){
+                  
+                  gg_ly =  plotly::ggplotly(gg) %>% 
+                    layout(legend = list(orientation = "h",   # show entries horizontally
+                                         xanchor = "center",  # use center of legend as anchor
+                                         x = 0.5,
+                                         yanchor = "bottom",
+                                         y = -0.6
+                    ))  
+                  # subtitle
+                  # if(!is.null(gg$labels$subtitle) & !is.null(gg$labels$title)){
                   # subtitle_ly = paste0(gg$labels$title,
                   #                   '<br>', '<sup>',
                   #                   gsub("\\\n", "", gg$labels$subtitle),
                   #                   '</sup>')
                   # subtitle_ly = paste0(gsub("\\\n", "", gg$labels$subtitle))
-                                    
+                  
                   # gg_ly = gg_ly %>% 
                   #   layout(
                   #     # title = list(text = title_ly),
@@ -372,105 +383,126 @@ shinyServer(function(input, output, session) {
                   #                      y = -0.2,
                   #                      showarrow=FALSE)
                   #          )
-                # }
-                
-                gg_react[[var_ly]] = gg_ly
-              }else{
-                gg_react[[var_ly]] = gg
-              }
-            
-              # Print(names(reactiveValuesToList(gg_react)))
-              
-              link_code_file_ = gg$link_code_file
-              link_code_file_ = gsub(link_app, ".", link_code_file_)
-              
-              var_name(var)
-              link_code_file(link_code_file_)
-              update_plot(gg$update)
-              run_time_plot(gg$run_time)
-         
-              # 
-              # mise a jour du graphique a l ecran 
-              # 
-              
-              var_gg = paste0(var, "_gg")
-              var_ly_gg = paste0(var_ly, "_gg")
-              # output[[var_gg]] <- renderPlot({gg_react[[var]]})
-              
-              # 
-              # creation d'un onglet/tab avec le graphique 
-              # 
-              Print(var)
-             
-              
-              if("ggplot" %in% class(gg)){
-                
-                Print(class(gg))
-                # output[[var_gg]] <- renderPlot({gg_react[[var]]})
-                output[[var_gg]] <- renderPlot({gg})
-                
-                output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
-                
-                if(input$interact_plot == FALSE){
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                              plotOutput(var_gg,
-                                                                         width = "100%"
-                                                                         , height = "80vh"
-                                                              ))
+                  # }
+                  
+                  gg_react[[var_ly]] = gg_ly
                 }else{
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                              plotlyOutput(var_ly_gg,
+                  gg_react[[var_ly]] = gg
+                }
+                
+                # Print(names(reactiveValuesToList(gg_react)))
+                
+                link_code_file_ = gg$link_code_file
+                link_code_file_ = gsub(link_app, ".", link_code_file_)
+                
+                
+                link_code_file(link_code_file_)
+                update_plot(gg$update)
+                run_time_plot(gg$run_time)
+                
+                # 
+                # mise a jour du graphique a l ecran 
+                # 
+                
+                var_gg = paste0(var, "_gg")
+                var_ly_gg = paste0(var_ly, "_gg")
+                # output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                
+                # 
+                # creation d'un onglet/tab avec le graphique 
+                # 
+                Print(var)
+                
+                
+                if("ggplot" %in% class(gg)){
+                  
+                  Print(class(gg))
+                  # output[[var_gg]] <- renderPlot({gg_react[[var]]})
+                  output[[var_gg]] <- renderPlot({gg})
+                  
+                  output[[var_ly_gg]] <- renderPlotly({gg_react[[var_ly]]})
+                  
+                  if(input$interact_plot == FALSE){
+                    list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                                plotOutput(var_gg,
                                                                            width = "100%"
                                                                            , height = "80vh"
-                                                              ))
-                }
-                
-              }else if("highchart" %in% class(gg)){
-                Print(class(gg))
-                
-                
-                
-                if("highcharter" %in% pkg[,1]){
+                                                                ))
+                  }else{
+                    list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                                plotlyOutput(var_ly_gg,
+                                                                             width = "100%"
+                                                                             , height = "80vh"
+                                                                ))
+                  }
                   
-                  output[[var_gg]] <- renderHighchart({gg_react[[var]]})
+                }else if("highchart" %in% class(gg)){
+                  Print(class(gg))
                   
-                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                              highchartOutput(var_gg,
-                                                                              width = "100%"
-                                                                              , height = "80vh"
-                                                              ))
+                  
+                  
+                  if("highcharter" %in% pkg[,1]){
+                    
+                    output[[var_gg]] <- renderHighchart({gg_react[[var]]})
+                    
+                    list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                                highchartOutput(var_gg,
+                                                                                width = "100%"
+                                                                                , height = "80vh"
+                                                                ))
+                  }
+                  
+                  
                 }
-               
+                # }file_to_load !is.na
                 
               }
-      }
               
+            
           # 
           # AJOUT DU GRAPHIQUE PNG EXISTANT
           # 
-          if(str_detect(var_file, ".png$")){
-            if(file.exists(var_file)){
+              if(stringr::str_detect(minio_file_path, "_png$|_jpeg$")){
+                # if(file.exists(var_file)){
+                
               
-              output$Image <- renderImage({
-
-                filename <- normalizePath(var_file)
-
-                # Return a list containing the filename and alt text
-                list(src = filename,
-                     alt = "test")
-
-              }, deleteFile = FALSE)
+                if(stringr::str_detect(minio_file_path, "_png$")){image_format = "png"}
+                if(stringr::str_detect(minio_file_path, "_jpeg$")){image_format = "jpeg"}
+                
+                  output$Image <- renderImage({
+                    
+                    # filename <- normalizePath(var_file)
+                    
+                    tmpfile <- 
+                      get_object(minio_file_path, 
+                                 bucket = "groupe-1360",
+                                 use_https = F, region = "") %>%
+                      magick::image_read() %>%
+                      magick::image_write(tempfile(fileext = paste0(".", image_format)),
+                                  format = image_format)
+                    
+                    
+                    # Return a list containing the filename and alt text
+                    list(src = tmpfile,
+                         alt = "test")
+                    
+                  }, deleteFile = FALSE)
+                  
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
+                                                              box(
+                                                                width = "100%",
+                                                                imageOutput("Image")
+                                                                # plotOutput("Image")
+                                                              ))
+                  
+                  
+                # }
+              }
               
-              list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Graphique",
-                                                         box(
-                                                           width = "100%",
-                                                           imageOutput("Image")
-                                                           # plotOutput("Image")
-                                                         ))
               
-              
-            }
-          }
+          # if(str_detect(var_file, ".png$")){
+          # 
+          # }
           
           
                 list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))

@@ -12,7 +12,7 @@ Print = function(x){
 
 source("./function/librairies.R")
 source("./function/api_key.R")
-source("./function/pRev_DB_var_names.R")
+# source("./function/pRev_DB_var_names.R")
 source("./function/update_DB_variable.R")
 source("./function/export_graph.R")
 source("./function/readSDMX2.R")
@@ -34,7 +34,7 @@ print(var_env_tbl)
 
 bucket_data = try(get_bucket("groupe-1360", use_https = F, region = ""))
 if(!"try-error" %in% class(bucket_data)){
-  print(bucket_data)
+  cat("app connected to minio", file = stderr())
 }
 
 # data_format = "RData"
@@ -45,17 +45,18 @@ link_results =  "./data/resultats"
 
 cahier_file = "./function/cahier.Rmd"
  
-DB_var_file = file.path(".", "data", "resultats", "_files", "DB_variables.rds")
+# DB_var_file = file.path(".", "data", "resultats", "_files", "DB_variables.rds")
 
 # MAJ de la base de données des noms des variables toutes les heures
-if(FALSE){
-  update_DB_variable()
-}
+# if(FALSE){
+#   update_DB_variable()
+# }
 
 # Sys.setenv(http_proxy="proxy-rie.http.insee.fr:8080")
 # Sys.setenv(https_proxy="proxy-rie.http.insee.fr:8080")
 
-DB_variables = readRDS(DB_var_file)
+# DB_variables = readRDS(DB_var_file)
+DB_variables = update_DB_variable()
 
 perimetre_list = 
   DB_variables %>% 
