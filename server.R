@@ -462,12 +462,12 @@ shinyServer(function(input, output, session) {
           # 
           # AJOUT DU GRAPHIQUE PNG EXISTANT
           # 
-              if(stringr::str_detect(minio_file_path, "_png$|_jpeg$")){
+              if(stringr::str_detect(minio_file_path, "_png$|_jpg$")){
                 # if(file.exists(var_file)){
                 
               
                 if(stringr::str_detect(minio_file_path, "_png$")){image_format = "png"}
-                if(stringr::str_detect(minio_file_path, "_jpeg$")){image_format = "jpeg"}
+                if(stringr::str_detect(minio_file_path, "_jpg$")){image_format = "jpg"}
                 
                   output$Image <- renderImage({
                     

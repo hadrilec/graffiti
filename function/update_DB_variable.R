@@ -28,7 +28,7 @@ update_DB_variable <- function(){
       pull(minio_path) %>% 
       as.character()
     
-    if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpeg_title$")){
+    if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
       minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
                                            bucket = "groupe-1360",
                                            object = obj_name,
@@ -64,7 +64,7 @@ update_DB_variable <- function(){
           DB_variable[row_id, "file"] = as.character(gg_code_file)
         }
         
-        if(stringr::str_detect(obj_name, "_png_title$|_jpeg_title$")){
+        if(stringr::str_detect(obj_name, "_png_title$|_jpg_title$")){
           if("data.frame" %in% class(minio_obj)){
             row_id_targeted = which(DB_variable[, "minio_path"] == gsub("_title", "", obj_name))
             if(length(row_id_targeted) > 0){

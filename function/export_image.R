@@ -25,17 +25,18 @@ export_image <- function(link_image, perim, folder_name, title){
   
   image_type = ""
   if(stringr::str_detect(link_image, ".png$")){image_type = "png"}
-  if(stringr::str_detect(link_image, ".jpeg$")){image_type = "jpeg"}
+  if(stringr::str_detect(link_image, ".jpg$")){image_type = "jpg"}
   
   minio_file_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_", image_type))
   
+  print(minio_file_path)
   # export image
   aws.s3::s3write_using(link_image, FUN = file.copy,
                         bucket = "groupe-1360", object = minio_file_path,
                         opts = list("use_https" = F, "region" = ""))
   
   minio_title_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_", image_type, "_title"))
-  
+ 
   # export image title
   aws.s3::s3write_using(df, FUN = saveRDS,
                         bucket = "groupe-1360", object = minio_title_path,
