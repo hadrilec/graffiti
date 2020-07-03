@@ -124,7 +124,8 @@ RTE_price_ = RTE_price %>%
   filter(time_ < today()) %>%
   filter(!perim %in% c("DE", "CH")) %>% 
   mutate(perim = replace(perim, perim == "DL", "DE")) %>% 
-  filter(value = case_when(value < -200 ~ NA_real_,
+  mutate(value = as.numeric(value)) %>% 
+  mutate(value = case_when(value < -200 ~ NA_real_,
                            TRUE ~ as.numeric(value)))
 
 confin_dates = data.frame(perim = c("FR", "GB", "IT", 
