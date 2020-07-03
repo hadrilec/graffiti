@@ -1,5 +1,10 @@
 export_image <- function(link_image, perim, folder_name, title){
   
+  file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+  if(file.exists(file_minio_credentials)){
+    source(file_minio_credentials)
+  }
+  
   if(!file.exists(link_image)){
     stop("le fichier link_image n'existe pas")
   }
@@ -17,5 +22,24 @@ export_image <- function(link_image, perim, folder_name, title){
   df = data.frame(perim = perim, folder_name = folder_name, title = title, file = link_image)
   
   saveRDS(df, file = file.path(path_resultats_perim_folder, paste0(folder_name, "_png" ,".rds")))
+  
+  image_type = ""
+  if(stringr::str_detect(link_image, ".png$")){image_type = "png"}
+  if(stringr::str_detect(link_image, ".jpeg$")){image_type = "jpeg"}
+  
+  minio_file_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_", image_type))
+  
+  # export image
+  aws.s3::s3write_using(link_image, FUN = file.copy,
+                        bucket = "groupe-1360", object = minio_file_path,
+                        opts = list("use_https" = F, "region" = ""))
+  
+  minio_title_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_", image_type, "_title"))
+  
+  # export image title
+  aws.s3::s3write_using(df, FUN = saveRDS,
+                        bucket = "groupe-1360", object = minio_title_path,
+                        opts = list("use_https" = F, "region" = ""))
+  
 }
 
