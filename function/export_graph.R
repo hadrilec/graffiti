@@ -121,11 +121,13 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
     # )
     # 
     # if(class(render_code_html) == "try-error"){
-    
-    rmarkdown::render(input = rmd_file,
-                      runtime = "shiny",
-                      output_file = rmd_output_file_,
-                      params = list(code_file = link_used_file_))
+    if(file.exists(rmd_file)){
+      rmarkdown::render(input = rmd_file,
+                        runtime = "shiny",
+                        output_file = rmd_output_file_,
+                        params = list(code_file = link_used_file_))
+    }
+
     # }
     
     # }
