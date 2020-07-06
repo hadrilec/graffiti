@@ -166,7 +166,7 @@ ggplot() +
 time2 = Sys.time()
 run_time = as.numeric(difftime(time2, time1, units = "secs"))
 
-export_graph(graph_ecb_bs,
+export_minio_graph(graph_ecb_bs,
              folder_name = "ecb_balance_sheet",
              # create_code_html = T,
              run_time = run_time,

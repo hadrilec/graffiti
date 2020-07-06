@@ -47,7 +47,7 @@ ggplot(data, aes(x = time, y = values)) +
 time_end = Sys.time()
 run_time = round(difftime(time_end, time_start, units = "secs"))
 
-export_graph(gg_pop, folder_name = "chomage_europe",
+export_minio_graph(gg_pop, folder_name = "chomage_europe",
              # create_code_html =  TRUE,
              perim = "ZE", update = T, run_time = run_time)
 

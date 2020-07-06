@@ -61,7 +61,7 @@ runtime_end = Sys.time()
 run_time = as.numeric(difftime(runtime_end, runtime_start), units = "secs")
 
 
-export_graph(
+export_minio_graph(
   graph_eur_exr_fast,
   # create_code_html =  TRUE,
   folder_name = "eur_exr_fast",

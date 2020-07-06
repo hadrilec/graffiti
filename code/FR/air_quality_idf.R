@@ -98,7 +98,7 @@ ggplot(data_plot, aes(x = jour, y = value,
 time2 = Sys.time()
 run_time = as.numeric(difftime(time2, time1, units = "secs"))
 
-export_graph(gg_pollution_idf,
+export_minio_graph(gg_pollution_idf,
              update = TRUE,
              run_time = run_time,
              # create_code_html = T,

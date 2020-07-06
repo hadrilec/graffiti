@@ -182,7 +182,7 @@ gg_epargne + ggsave(filename = file_graph, width = 15, height = 10)
 time_end = Sys.time()
 run_time = difftime(time_end, time_start, units = "secs")
 
-export_graph(gg_epargne,
+export_minio_graph(gg_epargne,
              create_code_html = F,
              folder_name = "epargne_fr",
              run_time = run_time,

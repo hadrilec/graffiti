@@ -149,7 +149,7 @@ runtime_end = Sys.time()
 run_time = as.numeric(difftime(runtime_end, runtime_start), units = "secs")
 
 
-export_graph(graph_oil, perim = "OIL", run_time = run_time,
+export_minio_graph(graph_oil, perim = "OIL", run_time = run_time,
              # create_code_html = TRUE,
              folder_name = "OIL_price", update = F)
 

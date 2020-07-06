@@ -86,7 +86,7 @@ runtime_end = Sys.time()
 
 run_time = as.numeric(difftime(runtime_end, runtime_start, units = "secs"))
 
-export_graph(plot = hc_route_paris,
+export_minio_graph(plot = hc_route_paris,
              folder_name = "route_paris",
              # create_code_html = T,
              run_time = run_time,

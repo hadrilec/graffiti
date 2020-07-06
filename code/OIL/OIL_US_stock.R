@@ -117,7 +117,7 @@ time_end = Sys.time()
 run_time = round(difftime(time_end, time_start, units = "secs"))
 
 
-export_graph(
+export_minio_graph(
   gg_us_stock_oil_weekly,
   perim = "OIL",
   folder_name = "us_stock_oil_weekly",

@@ -27,8 +27,10 @@ shinyServer(function(input, output, session) {
   code_related_title <- reactiveVal()
   page_code = reactiveVal()
   
+  
+  
   observeEvent({var_name()},{
-    
+     
     Print(var_name())
     
     gg = current_plot()

@@ -104,15 +104,15 @@ for(perim in list_perim){
 time_end = Sys.time()
 run_time = as.numeric(difftime(time_end, time_start, units = "secs"))
 
-export_graph(gg_conso_electr_US48, perim = "US", run_time = run_time, 
+export_minio_graph(gg_conso_electr_US48, perim = "US", run_time = run_time, 
              # create_code_html =  TRUE,
              folder_name = "us_electr_consumption_US", update = T)
 
-export_graph(gg_conso_electr_CAL, perim = "US", run_time = run_time,
+export_minio_graph(gg_conso_electr_CAL, perim = "US", run_time = run_time,
              # create_code_html =  TRUE,
              folder_name = "us_electr_consumption_CAL", update = T)
 
-export_graph(gg_conso_electr_NY, perim = "US", run_time = run_time,
+export_minio_graph(gg_conso_electr_NY, perim = "US", run_time = run_time,
              # create_code_html =  TRUE,
              folder_name = "us_electr_consumption_NY", update = T)
 

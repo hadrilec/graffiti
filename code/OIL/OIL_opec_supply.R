@@ -90,7 +90,7 @@ ggplot(OIL_prod_opec, aes(x = date, y = value, fill = country)) +
 time_end = Sys.time()
 run_time = round(difftime(time_end, time_start, units = "secs"))
 
-export_graph(gg_OIL_prod_opec,
+export_minio_graph(gg_OIL_prod_opec,
              folder_name = "OIL_prod_opec",
              # create_code_html = TRUE,
              perim = "OIL",

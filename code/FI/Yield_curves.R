@@ -132,7 +132,7 @@ graph_yc = ggplot(data = data_f_, aes(x = x, y = value, colour = perim)) +
 time2 = Sys.time()
 run_time = as.numeric(difftime(time2, time1, units = "secs"))
 
-export_graph(graph_yc, perim = "FI",
+export_minio_graph(graph_yc, perim = "FI",
              # create_code_html = TRUE,
              run_time = run_time,
              folder_name = "yc", update = TRUE)

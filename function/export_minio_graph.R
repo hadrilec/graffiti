@@ -1,5 +1,6 @@
-export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
+export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
+                         export_code = TRUE,
                          width = 15, height = 10, update = FALSE, data_format = "rds") 
 {
   file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
@@ -152,9 +153,35 @@ export_graph = function (plot, folder_name, perim = "_autre", run_time = NULL,
   
   print(minio_file_path)
   
+  # 
+  # export graph data
+  # 
+  
   aws.s3::s3write_using(gg, FUN = saveRDS,
                 bucket = "groupe-1360", object = minio_file_path,
                 opts = list("use_https" = F, "region" = ""))
+  
+  
+  # 
+  # export code file
+  # 
+  
+  if(export_code){
+    
+    minio_file_code_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_code"))
+
+    save_code_file = try(rstudioapi::documentSave(rstudioapi::getActiveDocumentContext()$id))
+    link_used_file = try(rstudioapi::getSourceEditorContext()$path)
+    
+    if(class(save_code_file) != "try-error" & class(link_used_file) != "try-error"){
+      
+      aws.s3::s3write_using(link_used_file, FUN = file.copy,
+                            bucket = "groupe-1360", object = minio_file_code_path,
+                            opts = list("use_https" = F, "region" = ""))
+      
+      
+    }
+  }
   
 }
 

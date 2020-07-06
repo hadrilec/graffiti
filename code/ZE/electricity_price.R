@@ -168,7 +168,7 @@ ggplot(RTE_price_, aes(x = time_, y = value, colour = year_)) +
 time2 = Sys.time()
 run_time = as.numeric(difftime(time2, time1, units = "secs"))
 
-export_graph(gg_RTE_price, perim = "ZE",
+export_minio_graph(gg_RTE_price, perim = "ZE",
              # create_code_html = T,
              run_time = run_time,
              folder_name = "RTE_price", update = F)

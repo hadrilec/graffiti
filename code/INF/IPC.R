@@ -158,7 +158,7 @@ for(i in 1:length(list_df_annuel)){
   
   gg = get(list_gg_annuel[i])
   
-  export_graph(gg,
+  export_minio_graph(gg,
                update = TRUE,
                run_time = run_time,
                # create_code_html = TRUE,
