@@ -2,6 +2,14 @@ shinyServer(function(input, output, session) {
   
   observe({Print(input$tabs_menu)})
   
+  
+  output$slide_show <- renderUI({
+    if("slickR" %in% pkg[,1]){
+      slickR::slickR(obj = c(NA, NA), height = 100, width = "95%") + 
+        settings(dots = TRUE, autoplay = TRUE)
+    }
+  })
+  
   DB_variables_react <- reactive({
     Print(input$MAJ_dico)
     

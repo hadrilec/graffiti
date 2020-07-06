@@ -7,26 +7,13 @@ shinyUI(
                         titleWidth = 285,
                         enable_rightsidebar = FALSE,
                         left_menu = tagList(
+                       
+                           
+                          
                           tags$style(type='text/css', ".selectize-dropdown-content { max-height: 600px; }"),
-                          # actionButton("home_button", label = NULL, icon("home")),
-                          # selectizeInput(
-                          #   'select_perim',
-                          #   label = NULL,
-                          #   width = "200px",
-                          #   choices = perimetre_list,
-                          #   options = list(
-                          #     placeholder = 'Sélectionner un périmètre',
-                          #     onInitialize = I('function() { this.setValue(""); }')
-                          #   )
-                          # ) ,
-                       #    tags$head(tags$style("
-                       # .jhr{
-                       # display: inline;
-                       # vertical-align: middle;
-                       # padding-left: 10px;
-                       # }")),
-                       # tags$style(HTML(".selected {background-color:blue !important;}")),
-                    
+                          
+                          conditionalPanel(
+                            condition = "input.tabs_menu == '8'",
                           pickerInput("select_perim",
                                       label = NULL,
                                       choices = countries,
@@ -35,33 +22,11 @@ shinyUI(
                                       multiple = FALSE,
                                       options = pickerOptions(
                                         maxOptions = 1,
-                                                              # actionsBox = TRUE,
-                                                              # deselectAllText = "Tout déselectionner",
-                                                              # selectAllText = "Tout sélectionner",
-                                                              title = 'Sélectionner un périmètre'),
+                                        title = 'Sélectionner un périmètre'),
                                       choicesOpt = list(content = icons_perims)
-                          ),
-                          # pickerInput("select_perim",
-                          #             label = NULL,
-                          #             choices = countries,
-                          #             width = 200,
-                          #             selected = NULL,
-                          #             multiple = TRUE,
-                          #             options = pickerOptions(maxOptions = 1,
-                          #                                     title = 'Sélectionner un périmètre'),
-                          #             choicesOpt = list(content = icons_perim)
-                          # ),
-
-                          # selectizeInput(
-                          #   'select_variable',
-                          #   label = NULL,
-                          #   width = "220px",
-                          #   choices = NULL,
-                          #   options = list(
-                          #     placeholder = 'Sélectionner une variable',
-                          #     onInitialize = I('function() { this.setValue(""); }')
-                          #   )
-                          # ),
+                          )),
+                          conditionalPanel(
+                            condition = "input.tabs_menu == '8'",
                           selectizeInput(
                             'select_title', 
                             size = 30,
@@ -72,26 +37,25 @@ shinyUI(
                               placeholder = 'Sélectionner un titre',
                               onInitialize = I('function() { this.setValue(""); }')
                             )
-                          )
-                          ,actionButton("MAJ_dico", label = "MAJ du catalogue", icon("refresh"))
+                          ))
+                          , conditionalPanel(
+                            condition = "input.tabs_menu == '8'",
+                            actionButton("MAJ_dico", label = "MAJ du catalogue", icon("refresh")))
+                          
+                        # )#cond panel 8
                         )
                         ),
     
     dashboardSidebar(width=285,
                      sidebarMenu(id = "tabs_menu",
                                  menuItem("Graphiques", tabName = "8",
-                                          icon = icon("fas fa-sitemap"),startExpanded = F),
+                                          icon = icon("chart-area"),startExpanded = F),
                                  
-                                 menuItem("Graphiques2", tabName = "9",
-                                          icon = icon("fas fa-sitemap"),startExpanded = F),
-                                 # fluidRow(
-                                 # materialSwitch(
-                                 #   inputId = "interactive_plot",
-                                 #   label = "Primary", 
-                                 #   value = FALSE,
-                                 #   status = "primary"
-                                 # )
-                                 # ),
+                                 menuItem("Tableau de bord", tabName = "9",
+                                          icon = icon("desktop"),startExpanded = F),
+                                
+                                 conditionalPanel(
+                                   condition = "input.tabs_menu == '8'",
                                fluidRow(
                                  tags$style(type = "text/css", "#downloadData {color: black; margin-left:75px;}"),
                                  downloadButton("downloadData", label = "Télécharger les données")
@@ -103,14 +67,9 @@ shinyUI(
                                  value = FALSE,
                                  status = "primary"
                                ),
-                               # fluidRow(
-                               #   tags$style(type = "text/css", "#downloadPlot {color: black; margin-left:75px;}"),
-                               #   downloadButton("downloadPlot", label = "Télécharger le graphique")
-                               # ),
-                             
+                           
                                fluidRow(
                                  uiOutput("MAJ_plot"),
-                                 # actionButton("MAJ_plot", label = "MAJ du graphique", icon("refresh")),
                                  tags$style(type = "text/css", "#MAJ_plot {color: black; margin-left:45px;}")
                                ),
                                fluidRow(
@@ -135,6 +94,7 @@ shinyUI(
                                  tags$style(type = "text/css", "#downloadCahier {color: black; margin-left:75px;}"),
                                  downloadButton("downloadCahier", label = "Télécharger la présentation")
                                )
+                                 ) #cond panel 8
                      )
     ),
     ## Body content
@@ -155,6 +115,13 @@ shinyUI(
                  flag("fr", size = 0)
                )
                )
+        ),
+        tabItem(tabName = "9",
+                fluidRow(
+                  fillCol(
+                      fillRow(uiOutput("slide_show"))
+                  )
+                )
         )
       )
     )
