@@ -37,3 +37,15 @@ readSDMX2 <- function(link, name = "dfSDMX"){
     return(NULL)
   }
 }
+
+get_insee <- function(...){
+  list_idbank = paste0(list(...), collapse = "+")
+  link = sprintf("http://www.bdm.insee.fr/series/sdmx/data/SERIES_BDM/%s", list_idbank)
+  df = readSDMX2(link)
+  df = data.frame(df, stringsAsFactors = FALSE)
+  df[,"TITLE_FR"] = as.character(df[,"TITLE_FR"])
+  Encoding(df[,"TITLE_FR"]) = "UTF-8"
+  return(df)
+}
+
+# data = get_insee("001558315", "010540726")

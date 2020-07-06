@@ -120,7 +120,7 @@ run_time = round(difftime(time_end, time_start, units = "secs"))
 export_graph(
   gg_us_stock_oil_weekly,
   perim = "OIL",
-  folder_name = "us_oil_stock_weekly",
+  folder_name = "us_stock_oil_weekly",
   update = TRUE,
   # create_code_html = TRUE,
   run_time = run_time
