@@ -4,6 +4,11 @@ library(aws.s3)
 
 update_DB_variable <- function(){
   
+  file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+  if(file.exists(file_minio_credentials)){
+    source(file_minio_credentials)
+  }
+  
   data_in_DB = aws.s3::get_bucket("groupe-1360", use_https = F, region = "")
   
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
@@ -91,4 +96,51 @@ update_DB_variable <- function(){
   
 }
 
+get_minio_all = function(){
+  
+  file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+  if(file.exists(file_minio_credentials)){
+    source(file_minio_credentials)
+  }
+  
+  data_in_DB = aws.s3::get_bucket("groupe-1360", use_https = F, region = "")
+  
+  dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
+  contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
+  
+  minio_path_selected = contents_key[stringr::str_detect(contents_key, "^dataviz/")]
+  return(as.list(minio_path_selected))
+}
+
+dwn_minio_file = function(obj){
+  
+  file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+  if(file.exists(file_minio_credentials)){
+    source(file_minio_credentials)
+  }
+  
+  list_file = unlist(get_minio_all())
+  
+  ext = ""
+  if(stringr::str_detect(basename(obj), "_code$")){ext = ".R"}  
+  if(stringr::str_detect(basename(obj), "_gg_plot$")){ext = ".rds"}  
+  if(stringr::str_detect(basename(obj), "_png$")){ext = ".png"}  
+  if(stringr::str_detect(basename(obj), "_jpg$")){ext = ".jpg"}  
+  
+  file_dwn = file.path(Sys.getenv("USERPROFILE"), "Desktop", paste0(basename(obj), ext))
+  
+  if(obj %in% list_file){
+    
+    aws.s3::save_object(obj, 
+                file = file_dwn,
+                bucket = "groupe-1360", use_https = F, region = "")
+    
+    print(sprintf("file downloaded : %s", file_dwn))
+  }else{
+    print("file not found")
+  }
+}
+
 # DB_variable = update_DB_variable()
+# DB_minio = get_minio_all()
+# dwn_minio_file("dataviz/OIL/OIL_price/OIL_price_code")
