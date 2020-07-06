@@ -1,0 +1,197 @@
+
+
+
+<style type="text/css">
+pre {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 450px;
+}
+</style>
+<pre class="r"><code>library(tidyverse)
+library(rwebstat)
+library(lubridate)
+library(RColorBrewer)
+library(pRev)
+
+link_cahierFI_graph = &quot;M:/Usuels.dsc/pRev/FI/cahier_FI/graph&quot;
+file_name = paste0(&quot;graph_BDF_epargne_agg_M3&quot;, &quot;.pdf&quot; )
+file_graph = file.path(link_cahierFI_graph, file_name)
+
+webstat_client_ID &lt;- &#39;d85fb7da-a306-469f-9b60-2e35d251611b&#39;
+
+bsi_series = 
+  w_series_list(&quot;BSI1&quot;) %&gt;% 
+  filter(FREQ == &quot;M&quot;) %&gt;% 
+  filter(REF_AREA == &quot;FR&quot;)
+
+# BSI1.M.FR.Y.V.L22.L.1.U6.2300.Z01.E
+# Dépôts à terme négocié, jusqu&#39;à 2 ans, encours (CVS-CJO)
+
+# BSI1.M.FR.Y.V.L23.D.1.U6.2300.Z01.E 
+# Dépôts remboursables avec préavis, jusqu&#39;à 3 mois, encours (CVS-CJO)
+
+# Dépôts à vue 
+# BSI1.M.FR.Y.V.L21.A.1.U6.2300.Z01.E
+
+# BSI1.M.FR.Y.V.L30.A.1.U6.2300.Z01.E
+# Titres d&#39;OPC monétaires, encours (CVS-CJO)
+
+# BSI1.M.FR.Y.U.L24.A.1.U6.2300.Z01.E
+# Pensions
+
+# BSI1.M.FR.Y.V.L40.L.1.U6.2300.Z01.E
+# titres de créances &lt; 2 ans
+
+# BSI1.M.FR.Y.V.AXG.X.1.U5.2300.Z01.E
+# Avoirs monétaires bruts vis-à-vis du reste de la zone euro, encours (CVS-CJO)
+
+# Engagements monétaires bruts vis-à-vis du reste de la zone euro, encours (CVS-CJO)
+# BSI1.M.FR.Y.V.LXG.X.1.U5.2300.Z01.E
+
+list_series_ = c(&quot;BSI1.M.FR.Y.V.L22.L.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.L23.D.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.L21.A.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.L30.A.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.U.L24.A.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.L40.L.1.U6.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.AXG.X.1.U5.2300.Z01.E&quot;,
+                 &quot;BSI1.M.FR.Y.V.LXG.X.1.U5.2300.Z01.E&quot;)
+
+list_series = paste0(list_series_, collapse = &quot;+&quot;)
+
+data = w_data(dataset_name = &quot;BSI1&quot;,
+               series_name = list_series) 
+
+bsi_series_ = bsi_series %&gt;% 
+  mutate(variable = .[[1]]) %&gt;% 
+  filter(variable %in% list_series_) %&gt;% 
+  select(variable, Title)
+
+data_ = data %&gt;% 
+  mutate(date = as.Date(as.character(date))) %&gt;% 
+  pivot_longer(-date, names_to = &quot;variable&quot;, values_to = &quot;value&quot;) %&gt;% 
+  left_join(bsi_series_, by = &quot;variable&quot;) %&gt;% 
+  mutate(title = gsub(&quot;, encours \\(CVS-CJO\\)&quot;, &quot;&quot;, Title)) %&gt;%
+  mutate(value = value / 1000) %&gt;% 
+  mutate(month = month(date)) %&gt;% 
+  group_by(date) %&gt;% 
+  mutate(total = sum(value, na.rm = T)) %&gt;% 
+  group_by(variable) %&gt;% 
+  mutate(GT = 100 * (value/dplyr::lag(value)-1)) %&gt;% 
+  mutate(flux = value - dplyr::lag(value)) %&gt;% 
+  group_by(variable, month) %&gt;% 
+  mutate(GA = 100 * (value/dplyr::lag(value)-1)) %&gt;% 
+  mutate(contrib = 100 * (value - dplyr::lag(value)) / dplyr::lag(total)) %&gt;% 
+  ungroup() %&gt;% 
+  select(-total, -Title, -month) %&gt;% 
+  dplyr::rename(encours = value) %&gt;% 
+  pivot_longer(-c(&quot;date&quot;, &quot;variable&quot;, &quot;title&quot;),
+               names_to = &quot;type&quot;, values_to = &quot;value&quot;) %&gt;% 
+  mutate(type_label = case_when(type == &quot;encours&quot; ~ &quot;Agrégat monétaire M3 en milliards d&#39;euros&quot;,
+                                type == &quot;GA&quot; ~ &quot;Glissement annuel en %&quot;,
+                                type == &quot;GT&quot; ~ &quot;Glissement trimestriel en %&quot;,
+                                type == &quot;flux&quot; ~ &quot;Flux en milliards d&#39;euros&quot;,
+                                type == &quot;contrib&quot; ~ &quot;Contribution au glissement annuel de M3 en %&quot;))
+  
+type_label_order = data_ %&gt;% 
+  distinct(type, type_label) %&gt;% 
+  mutate(type = factor(type, levels = c(&quot;encours&quot;, &quot;flux&quot;, &quot;contrib&quot;,&quot;GT&quot; ,&quot;GA&quot;))) %&gt;% 
+  arrange(type) %&gt;% 
+  pull(type_label) %&gt;% 
+  as.character()
+
+colors_ = c(brewer.pal(7,&#39;Set1&#39;), brewer.pal(8,&#39;Set2&#39;), brewer.pal(11,&#39;Set3&#39;),
+            brewer.pal(8, &#39;Pastel1&#39;), brewer.pal(8, &#39;Pastel2&#39;),
+            brewer.pal(8, &#39;Dark2&#39;))
+
+last_values = data_ %&gt;% 
+  group_by(variable) %&gt;% 
+  filter(date == max(date)) %&gt;% 
+  mutate(value = round(value, 1)) %&gt;% 
+  filter(type == &quot;flux&quot;)
+
+variable_order = data_ %&gt;% 
+  group_by(variable) %&gt;% 
+  filter(date == max(date)) %&gt;% 
+  filter(type == &quot;encours&quot;) %&gt;% 
+  arrange(desc(value)) %&gt;% 
+  pull(title) %&gt;% 
+  as.character()
+
+data_plot = data_ %&gt;% 
+  filter(date &gt;= &quot;2015-01-01&quot;) %&gt;%
+  mutate(type_label = factor(type_label, levels = type_label_order)) %&gt;% 
+  mutate(title = factor(title, levels = variable_order)) %&gt;% 
+  filter(type != &quot;GA&quot;) %&gt;% 
+  filter(type != &quot;GT&quot;)
+
+data_plot_GT = data_ %&gt;% 
+  filter(date &gt;= &quot;2018-01-01&quot;) %&gt;%
+  mutate(type_label = factor(type_label, levels = type_label_order)) %&gt;% 
+  mutate(title = factor(title, levels = variable_order)) %&gt;% 
+  filter(type == &quot;GT&quot;) %&gt;% 
+  filter(title != &quot;Pensions&quot;) %&gt;% 
+  filter(!str_detect(title, &quot;Avoirs moné|Titre de créan&quot;))
+
+depot_avue_val = last_values %&gt;% 
+  filter(title == &quot;Dépôts à vue &quot;) %&gt;% 
+  pull(value)
+
+depot_term_remb_val = last_values %&gt;% 
+  filter(variable %in% c(&quot;BSI1.M.FR.Y.V.L23.D.1.U6.2300.Z01.E&quot;, &quot;BSI1.M.FR.Y.V.L22.L.1.U6.2300.Z01.E&quot;)) %&gt;% 
+  pull(value) %&gt;% 
+  sum()
+
+
+
+last_date = last_values %&gt;% pull(date) %&gt;% max()
+
+last_values_subtt = sprintf(&quot;Dernier point : %s, flux de dépôts à vue : %s, flux de dépôts à termes et remboursables : %s milliards d&#39;euros&quot;,
+                            last_date, depot_avue_val, depot_term_remb_val)
+
+def_M3 = &quot;M3 - M2 (résidents) = Titres d&#39;OPC monétaires + Pensions + Titres de créances &lt; 2 ans&quot;
+agregat_definition = sprintf(&quot;M1 = dépôts à vue, M2 - M1 = dépôts à termes et remboursables, %s&quot;, def_M3)
+subtt = sprintf(&quot;Source: Banque de France, %s\n%s&quot;, agregat_definition, last_values_subtt)
+
+caption_ga = &quot;L&#39;empilement des glissements annuels permet de simplifier la visualisation&quot;
+caption_pension = &quot;La pension de titres est une cession temporaire de titres financiers. L&#39;opération répond au besoin de liquidité des marchés&quot;
+caption_depot_avue = &quot;Dépôts à vue = compte courant + compte chèque&quot;
+caption_depot_terme = &quot;Un dépôt à terme est une somme bloquée sur un compte bancaire par un particulier ou une entreprise en contrepartie du versement d&#39;intérêts.&quot;
+caption_depot_rmb = &quot;&quot;
+caption = sprintf(&quot;%s\n%s\n%s\n%s&quot;, caption_ga, caption_pension, caption_depot_avue, caption_depot_terme)
+
+gg_epargne  = 
+ggplot() +
+  facet_wrap(~type_label, scales = &quot;free&quot;) +
+  geom_bar(data = data_plot, aes(x = date, y = value, fill = title),
+           stat = &quot;identity&quot;, position = &quot;stack&quot;) +
+  geom_bar(data = data_plot_GT, aes(x = date, y = value, fill = title),
+           stat = &quot;identity&quot;, position = &quot;dodge&quot;) +
+  scale_fill_manual(values = colors_) +
+  scale_x_date(expand = c(0.01, 0.01)) +
+  ggthemes::theme_stata() +
+  guides(fill = guide_legend(ncol = 3)) +
+  ggtitle(&quot;Epargne des ménages en France - agrégat monétaire M3&quot;) +
+  labs(caption = caption, subtitle = subtt) +
+  theme(
+    plot.caption = element_text(hjust = 0.5),
+    plot.title   = element_text(lineheight = 0.8, face = &quot;bold&quot;, hjust = 0.5, size = 18),
+    axis.text.x  = element_text(angle = 45, hjust = 1),
+    axis.text.y  = element_text(angle = 0, hjust = 1),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.title = element_blank(),
+    legend.position = &quot;bottom&quot;
+  ) 
+
+gg_epargne + ggsave(filename = file_graph, width = 15, height = 10)
+
+export_graph(gg_epargne,
+             create_code_html = F,
+             folder_name = &quot;epargne_fr&quot;,
+             perim = &quot;FI&quot;, update = TRUE)</code></pre>
+
