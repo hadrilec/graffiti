@@ -3,7 +3,10 @@ shinyServer(function(input, output, session) {
   observe({Print(input$tabs_menu)})
   
   DB_variables_react <- reactive({
-    DB_variables %>% 
+    
+    DB_variable = update_DB_variable()
+    
+    DB_variable %>% 
       arrange(perim)
   })
   
