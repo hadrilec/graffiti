@@ -23,6 +23,7 @@ library(RColorBrewer)
 library(ggthemes)
 
 # library(magick)
+# library(slickR)
 
 #library(fredr)
 library(eia)

@@ -13,7 +13,7 @@ Print = function(x){
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/update_DB_variable.R")
-source("./function/export_graph.R")
+source("./function/export_minio_graph.R")
 source("./function/readSDMX2.R")
 
 pkg = installed.packages()
