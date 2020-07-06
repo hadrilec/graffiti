@@ -78,8 +78,10 @@ update_DB_variable <- function(){
     }
   }
   
-  DB_variable = DB_variable %>% 
-    tidyr::drop_na()
+  DB_variable = DB_variable %>%
+    filter(!is.na(title)) %>% 
+    mutate(run_time = case_when(is.na(run_time) ~ 0, 
+                                TRUE ~ as.numeric(run_time)))
   
   aws.s3::s3write_using(DB_variable, FUN = saveRDS,
                 bucket = "groupe-1360", object = "dataviz/DB_variable/DB_variable",
