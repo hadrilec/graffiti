@@ -73,7 +73,7 @@ shinyUI(
                               onInitialize = I('function() { this.setValue(""); }')
                             )
                           )
-                          # ,actionButton("MAJ_dico", label = "MAJ du dictionnaire", icon("refresh"))
+                          ,actionButton("MAJ_dico", label = "MAJ du dictionnaire", icon("refresh"))
                         )
                         ),
     
