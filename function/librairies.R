@@ -22,7 +22,7 @@ library(plotly)
 library(RColorBrewer)
 library(ggthemes)
 
-library(magick)
+# library(magick)
 # library(slickR)
 
 #library(fredr)
