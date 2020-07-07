@@ -5,7 +5,18 @@ shinyServer(function(input, output, session) {
   
   output$slide_show <- renderUI({
     if("slickR" %in% pkg[,1]){
-      slickR::slickR(obj = c(NA, NA), height = 100, width = "95%") + 
+      
+      gg1 = try(s3read_using(FUN = readRDS,
+                            object = "dataviz/FR/pollution_idf/pollution_idf_gg_plot",
+                            bucket = "groupe-1360",
+                            opts = list("use_https" = F, "region" = "")), silent = T)
+      
+      gg2 = try(s3read_using(FUN = readRDS,
+                            object = "dataviz/FI/epargne_fr/epargne_fr_gg_plot",
+                            bucket = "groupe-1360",
+                            opts = list("use_https" = F, "region" = "")), silent = T)
+      
+      slickR::slickR(obj = list(gg1, gg2), height = 100, width = "95%") + 
         settings(dots = TRUE, autoplay = TRUE)
     }
   })
@@ -521,24 +532,40 @@ shinyServer(function(input, output, session) {
           # if(str_detect(var_file, ".png$")){
           # 
           # }
-          
+              minio_file_path = file.path("dataviz", perim, var, paste0(var, "_html"))
+              file_dwn = tempfile()
+              dwn_html = 
+              try(aws.s3::save_object(minio_file_path, 
+                                  file = file_dwn,
+                                  bucket = "groupe-1360", use_https = F, region = ""))
           
                 list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
                 page_code(list_file_code[1])
                 
                 Print(list_file_code)
                 
-                
-                if(length(list_file_code) > 0){
-                  
-                  code_file = list_file_code[1]
+                if(!"try-error" %in% class(dwn_html)){
+                  cat("html from minio", file = stderr())
                   list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Code",
                                                               box(
                                                                 width = "100%",
-                                                                includeHTML(list_file_code[1])
+                                                                includeHTML(file_dwn)
                                                               ))
-
+                  
+                }else{
+                  if(length(list_file_code) > 0){
+                    
+                    code_file = list_file_code[1]
+                    list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Code",
+                                                                box(
+                                                                  width = "100%",
+                                                                  includeHTML(list_file_code[1])
+                                                                ))
+                    
+                  }
                 }
+                
+              
                 
       }
       }

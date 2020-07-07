@@ -30,8 +30,5 @@ delete_minio = function (variable, perim){
       print(sprintf("file deleted : %s", file_))
     }
   }
-
-  
-  
 }
 

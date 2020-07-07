@@ -126,6 +126,7 @@ dwn_minio_file = function(obj){
   if(stringr::str_detect(basename(obj), "_gg_plot$")){ext = ".rds"}  
   if(stringr::str_detect(basename(obj), "_png$")){ext = ".png"}  
   if(stringr::str_detect(basename(obj), "_jpg$")){ext = ".jpg"}  
+  if(stringr::str_detect(basename(obj), "_html$")){ext = ".html"}  
   
   file_dwn = file.path(Sys.getenv("USERPROFILE"), "Desktop", paste0(basename(obj), ext))
   
