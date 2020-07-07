@@ -16,8 +16,11 @@ delete_minio = function (variable, perim){
   minio_file_path_ggplot = file.path("dataviz", perim, variable, paste0(variable, "_gg_plot"))
   minio_file_path_png = file.path("dataviz", perim, variable, paste0(variable, "_png"))
   minio_file_path_jpg = file.path("dataviz", perim, variable, paste0(variable, "_jpg"))
+  minio_file_path_html = file.path("dataviz", perim, variable, paste0(variable, "_html"))
+  minio_file_path_code = file.path("dataviz", perim, variable, paste0(variable, "_code"))
   
-  list_file = c(minio_file_path_ggplot, minio_file_path_png, minio_file_path_jpg)
+  
+  list_file = c(minio_file_path_ggplot, minio_file_path_png, minio_file_path_jpg, minio_file_path_html, minio_file_path_code)
   
   for(file_ in list_file){
     if(file_ %in% minio_path_selected){
@@ -32,3 +35,4 @@ delete_minio = function (variable, perim){
   }
 }
 
+# delete_minio("chomage_europe2", "ZE")

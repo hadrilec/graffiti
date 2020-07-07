@@ -1,7 +1,7 @@
 export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
                          rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
                          export_code = TRUE,
-                         width = 15, height = 10, update = FALSE, data_format = "rds") 
+                         update = FALSE, data_format = "rds") 
 {
   file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
   if(file.exists(file_minio_credentials)){
@@ -118,10 +118,12 @@ export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = N
   plot$run_time <- run_time
   gg = plot
   
-  if(data_format == "rds"){
-    saveRDS(gg, file = file_path)
-  }else if (data_format == "rdata"){
-    save(gg, file = file_path)
+  if(file.exists(path_resultats_perim_folder)){
+    if(data_format == "rds"){
+      saveRDS(gg, file = file_path)
+    }else if (data_format == "rdata"){
+      save(gg, file = file_path)
+    }
   }
   
   minio_file_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_gg_plot"))
