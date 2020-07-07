@@ -23,11 +23,14 @@ shinyServer(function(input, output, session) {
   
   DB_variables_react <- reactive({
     Print(input$MAJ_dico)
-    
     DB_variable = update_DB_variable()
-    
     DB_variable %>% 
       arrange(perim)
+  })
+  
+  DB_minio_all <- reactive({
+    Print(input$MAJ_dico)
+    DB_minio = unlist(get_minio_all())
   })
   
   link_code_file <- reactiveVal()
@@ -259,7 +262,6 @@ shinyServer(function(input, output, session) {
             choices = countries,
             choicesOpt = list(content = icons_perims)
           )
-      
 
     }
   })
@@ -272,7 +274,6 @@ shinyServer(function(input, output, session) {
   ignoreNULL = FALSE, ignoreInit = FALSE,
   handlerExpr = {
     cat(" ", file = stderr())
-    print("start  ")
     
     Print(input$tabs)
     Print(input$select_perim)
@@ -281,7 +282,6 @@ shinyServer(function(input, output, session) {
     perim <- input$select_perim
       
       list_tab2 = list()
-      
   
       if(input$select_perim != ""){
       if(input$select_title != ""){
@@ -293,13 +293,6 @@ shinyServer(function(input, output, session) {
           pull(var) %>% 
           unique() 
         
-        # var_file = DB_variables_react() %>% 
-        #   dplyr::filter(title %in% c(input$select_title)) %>% 
-        #   filter(perim %in% c(input$select_perim)) %>% 
-        #   slice(1) %>% 
-        #   pull(file) %>% 
-        #   unique() 
-      
         minio_file_path = 
           DB_variables_react() %>% 
           dplyr::filter(title %in% c(input$select_title)) %>% 
@@ -415,8 +408,6 @@ shinyServer(function(input, output, session) {
                   gg_react[[var_ly]] = gg
                 }
                 
-                # Print(names(reactiveValuesToList(gg_react)))
-                
                 link_code_file_ = gg$link_code_file
                 link_code_file_ = gsub(link_app, ".", link_code_file_)
                 
@@ -431,8 +422,7 @@ shinyServer(function(input, output, session) {
                 
                 var_gg = paste0(var, "_gg")
                 var_ly_gg = paste0(var_ly, "_gg")
-                # output[[var_gg]] <- renderPlot({gg_react[[var]]})
-                
+               
                 # 
                 # creation d'un onglet/tab avec le graphique 
                 # 
@@ -518,31 +508,28 @@ shinyServer(function(input, output, session) {
                                                               box(
                                                                 width = "100%",
                                                                 imageOutput("Image")
-                                                                # plotOutput("Image")
                                                               ))
                 }
                
-                  
-                  
-                  
-                # }
               }
+            
               
+              list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
+              page_code(list_file_code[1])
               
-          # if(str_detect(var_file, ".png$")){
-          # 
-          # }
-              minio_file_path = file.path("dataviz", perim, var, paste0(var, "_html"))
-              file_dwn = tempfile()
-              dwn_html = 
-              try(aws.s3::save_object(minio_file_path, 
-                                  file = file_dwn,
-                                  bucket = "groupe-1360", use_https = F, region = ""))
-          
-                list_file_code = file.path(path_var, list.files(path_var, pattern = "code.html"))
-                page_code(list_file_code[1])
+              Print(list_file_code)
+              
+              minio_file_path_html = file.path("dataviz", perim, var, paste0(var, "_html"))
+              
+              if(minio_file_path_html %in% DB_minio_all()){
                 
-                Print(list_file_code)
+                file_dwn = tempfile()
+                
+                dwn_html = 
+                  try(aws.s3::save_object(minio_file_path_html, 
+                                          file = file_dwn,
+                                          bucket = "groupe-1360", use_https = F, region = ""))
+                
                 
                 if(!"try-error" %in% class(dwn_html)){
                   cat("html from minio", file = stderr())
@@ -552,20 +539,20 @@ shinyServer(function(input, output, session) {
                                                                 includeHTML(file_dwn)
                                                               ))
                   
-                }else{
-                  if(length(list_file_code) > 0){
-                    
-                    code_file = list_file_code[1]
-                    list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Code",
-                                                                box(
-                                                                  width = "100%",
-                                                                  includeHTML(list_file_code[1])
-                                                                ))
-                    
-                  }
                 }
                 
-              
+              }else{
+                if(length(list_file_code) > 0){
+                  
+                  code_file = list_file_code[1]
+                  list_tab2[[length(list_tab2)+1]] = tabPanel(title = "Code",
+                                                              box(
+                                                                width = "100%",
+                                                                includeHTML(list_file_code[1])
+                                                              ))
+                  
+                }
+              }
                 
       }
       }
@@ -585,17 +572,11 @@ shinyServer(function(input, output, session) {
         output$list_tab <- renderUI({
           do.call(tabsetPanel, c(list_tab2, id = 'tabs'))
         })
-      
-      
-
-      print("end  ")
 
       })
 
   observe({
-      # observeEvent(
-      #   {input$downloadData},
-      #   {
+  
       Print(input$downloadData)
       
     # 

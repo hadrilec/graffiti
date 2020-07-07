@@ -1,5 +1,5 @@
 
-link_data = "./data/resultats"
+link_data = "C:Users/XLAPDO/Desktop/app/data/resultats"
 
 # périmètre du graphique
 perimetre = "FR"
@@ -15,7 +15,7 @@ title = "Transactions par carte bancaire"
 
 link_image = file.path(link_data, perimetre, folder_name, file_name)
 
-export_image(link_image = link_image,
+export_minio_image(link_image = link_image,
            perim = perimetre,
            folder_name = folder_name,
            title = title)

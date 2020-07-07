@@ -10,7 +10,6 @@ link_cahierFI_graph = "M:/Usuels.dsc/pRev/FI/cahier_FI/graph"
 file_name = paste0("graph_BDF_epargne_agg_M3", ".pdf" )
 file_graph = file.path(link_cahierFI_graph, file_name)
 
-webstat_client_ID <- 'd85fb7da-a306-469f-9b60-2e35d251611b'
 
 bsi_series = 
   w_series_list("BSI1") %>% 
@@ -177,13 +176,13 @@ ggplot() +
     legend.position = "bottom"
   ) 
 
-gg_epargne + ggsave(filename = file_graph, width = 15, height = 10)
+# gg_epargne + ggsave(filename = file_graph, width = 15, height = 10)
 
 time_end = Sys.time()
 run_time = difftime(time_end, time_start, units = "secs")
 
 export_minio_graph(gg_epargne,
-             create_code_html = F,
+             # create_code_html = F,
              folder_name = "epargne_fr",
              run_time = run_time,
              perim = "FI", update = TRUE)

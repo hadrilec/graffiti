@@ -144,4 +144,4 @@ dwn_minio_file = function(obj){
 
 # DB_variable = update_DB_variable()
 # DB_minio = get_minio_all()
-# dwn_minio_file("dataviz/OIL/OIL_price/OIL_price_code")
+# dwn_minio_file("dataviz/FR/CB_transaction_vente/CB_transaction_vente_png")

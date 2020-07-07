@@ -1,4 +1,4 @@
-export_image <- function(link_image, perim, folder_name, title){
+export_minio_image <- function(link_image, perim, folder_name, title){
   
   file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
   if(file.exists(file_minio_credentials)){
@@ -9,19 +9,19 @@ export_image <- function(link_image, perim, folder_name, title){
     stop("le fichier link_image n'existe pas")
   }
   
-  path_resultats_perim = file.path(".", "data", "resultats", perim)
-  
-  path_resultats_perim_folder = file.path(".", "data", "resultats", perim, folder_name)
-  
-  for (link in c(path_resultats_perim, path_resultats_perim_folder)) {
-    if (!file.exists(link)) {
-      dir.create(link, "0777")
-    }
-  }
+  # path_resultats_perim = file.path(".", "data", "resultats", perim)
+  # 
+  # path_resultats_perim_folder = file.path(".", "data", "resultats", perim, folder_name)
+  # 
+  # for (link in c(path_resultats_perim, path_resultats_perim_folder)) {
+  #   if (!file.exists(link)) {
+  #     dir.create(link, "0777")
+  #   }
+  # }
   
   df = data.frame(perim = perim, folder_name = folder_name, title = title, file = link_image)
   
-  saveRDS(df, file = file.path(path_resultats_perim_folder, paste0(folder_name, "_png" ,".rds")))
+  # saveRDS(df, file = file.path(path_resultats_perim_folder, paste0(folder_name, "_png" ,".rds")))
   
   image_type = ""
   if(stringr::str_detect(link_image, ".png$")){image_type = "png"}
