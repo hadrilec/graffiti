@@ -1,5 +1,5 @@
 export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = NULL, 
-                         rmd_file = "./function/read_code.Rmd", create_code_html = FALSE,
+                         rmd_file = "M:/Usuels.dsc/pRev/fonctions/read_code.Rmd", create_code_html = FALSE,
                          export_code = TRUE,
                          update = FALSE, data_format = "rds") 
 {
@@ -104,7 +104,7 @@ export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = N
                               bucket = "groupe-1360", object = minio_file_html_path,
                               opts = list("use_https" = F, "region" = ""))
         
-        print("html created and exported")
+        print(minio_file_html_path)
       }
       
 
@@ -120,9 +120,9 @@ export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = N
   
   if(file.exists(path_resultats_perim_folder)){
     if(data_format == "rds"){
-      saveRDS(gg, file = file_path)
+      # saveRDS(gg, file = file_path)
     }else if (data_format == "rdata"){
-      save(gg, file = file_path)
+      # save(gg, file = file_path)
     }
   }
   
@@ -156,7 +156,7 @@ export_minio_graph = function (plot, folder_name, perim = "_autre", run_time = N
                             bucket = "groupe-1360", object = minio_file_code_path,
                             opts = list("use_https" = F, "region" = ""))
       
-      
+      print(minio_file_code_path)
     }
   }
   
