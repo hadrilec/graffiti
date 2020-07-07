@@ -11,7 +11,7 @@ ADD ./*.sh /srv/shiny-server/
 #ADD ./function/read_code.Rmd /srv/shiny-server/function/read_code.Rmd
 
 # duplicate app
-ADD ./data/ /srv/shiny-server/data/
+#ADD ./data/ /srv/shiny-server/data/
 ADD ./code/ /srv/shiny-server/code/
 ADD ./function/ /srv/shiny-server/function/
 
