@@ -12,6 +12,7 @@ eia_set_key(api_key_eia)
 # Federal Reserve API key
 pkg_check = installed.packages()
 if("fredr" %in% pkg_check[,1]){
+  library(fredr)
   fredr_set_key("1e1376b050a44076281adda2fe2e1a32")
 }
 
