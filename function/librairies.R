@@ -1,4 +1,6 @@
 
+pkg = installed.packages()
+
 library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
@@ -22,8 +24,15 @@ library(plotly)
 library(RColorBrewer)
 library(ggthemes)
 
-# library(magick)
-# library(slickR)
+if("magick" %in% pkg[,1]){
+  library(magick)
+}
+if("slickR" %in% pkg[,1]){
+  library(slickR)
+}
+if("highcharter" %in% pkg[,1]){
+  library(highcharter)
+}
 
 #library(fredr)
 library(eia)
