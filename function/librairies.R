@@ -33,6 +33,10 @@ if("slickR" %in% pkg[,1]){
 if("highcharter" %in% pkg[,1]){
   library(highcharter)
 }
+if("tools" %in% pkg[,1]){
+  library(tools)
+}
+
 
 #library(fredr)
 library(eia)
