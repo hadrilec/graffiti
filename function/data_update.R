@@ -1,4 +1,6 @@
 
+cat(getwd(), file = stderr())
+
 link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
 
 if(file.exists(link_app)){
@@ -8,50 +10,88 @@ if(file.exists(link_app)){
   link_app_code = file.path("./", "code")
 }
 
-link_results_ =  "./data/resultats"
-
-file_data_update = file.path(link_results_, "_files",
-                                  paste0("data_update", ".rds"))
-
-file_data_update_date = file.path(link_results_, "_files",
-                             paste0("data_update_", gsub("-|:| |CET","", Sys.time()),".rds"))
-
 source("./function/librairies.R")
 source("./function/api_key.R")
-source("./function/export_graph.R")
-source("./function/pRev_DB_var_names.R")
+source("./function/readSDMX2.R")
+source("./function/export_minio_graph.R")
+source("./function/export_minio_image.R")
+source("./function/update_DB_variable.R")
 
-list_R_files = list.files(link_app_code, recursive = T)
+list_R_files = data.frame(file = unlist(get_minio_all()), stringsAsFactors = F)
+list_R_files = list_R_files %>% 
+  filter(str_detect(file, "_code$"))
 
-df_data_update = 
-  data.frame(file_ = list_R_files) %>% 
-  separate(file_, into = c("perim", "file"), sep = "/") %>% 
-  as.data.frame()
+tempfile_ <- tempfile()
+
+for(i in 1:nrow(list_R_files)){
+  file_dwn = paste0(tempfile_, i)
+  
+  aws.s3::save_object(list_R_files[i,1], 
+                      file = file_dwn,
+                      bucket = "groupe-1360", use_https = F, region = "")
+  
+}
+
+list_downloaded_file = paste0(tempfile_, 1:nrow(list_R_files))
+
+df_downloaded_file = data.frame(downloaded_file = list_downloaded_file,
+                                file = list_R_files,
+                                twin_exist = NA,
+                                stringsAsFactors = F)
+
+for (ifile in 1:length(list_downloaded_file)){
+  # print(ifile)
+  file_to_check = list_downloaded_file[ifile]
+  
+  twin_file_exist = FALSE
+  
+  if(ifile != length(list_downloaded_file)){
+    for(ifile2 in (ifile+1):length(list_downloaded_file)){
+      
+      file_to_compare = list_downloaded_file[ifile2]
+      
+      if(md5sum(file_to_check) == md5sum(file_to_compare)){
+        twin_file_exist = TRUE
+        break
+      }
+    }
+  }
+  df_downloaded_file[ifile,"twin_exist"] = twin_file_exist
+}
+
 
 # 
 # run all scripts
 # 
 
-for (file_ in list_R_files){
+for (ifile in 1:nrow(df_downloaded_file)){
   
-  file_short = basename(file_)
-  link_file = file.path(link_app_code, file_)
+  file_run = df_downloaded_file[ifile,"downloaded_file"]
+  file_run_name = df_downloaded_file[ifile,"file"]
+  twin_exist = df_downloaded_file[ifile,"twin_exist"]
+  print(file_run_name)
+  # cat(file_run_name, file = stderr())
   
-  run_file = try(source(link_file))
-  
-  if(class(run_file) != "try-error"){
-    check = "OK"
+  if(!twin_exist){
+
+    run_message = try(source(file_run, encoding = "UTF-8"))
+    
+    if(class(run_message) != "try-error"){
+      check = "OK"
+    }else{
+      check = as.character(run_message)
+    }
+    
   }else{
-    check = run_file
+    check = "no run"
   }
-  i_file = which(df_data_update[,"file"] == file_short)
-  df_data_update[i_file, "check"] = check
+    
+  df_downloaded_file[ifile,"check"] = check
 }
 
-saveRDS(df_data_update , file = file_data_update)
-saveRDS(df_data_update , file = file_data_update_date)
+# TODO : exporter dans minio df_downloaded_file
 
 # MAJ catalogue/dico variables
-update_DB_variable()
+dbVar = update_DB_variable()
 
 
