@@ -36,7 +36,12 @@ if("highcharter" %in% pkg[,1]){
 if("tools" %in% pkg[,1]){
   library(tools)
 }
-
+if("rdbnomics" %in% pkg[,1]){
+  library(rdbnomics)
+}
+if("jsonline" %in% pkg[,1]){
+  library(jsonline)
+}
 
 #library(fredr)
 library(eia)
