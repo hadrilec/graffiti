@@ -29,4 +29,5 @@ deploy:
 update:
    stage: update
    script:
+   - 'chmod +x ./data_update.sh'
     - './data_update.sh'
