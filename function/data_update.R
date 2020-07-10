@@ -58,7 +58,7 @@ for (ifile in 1:length(list_downloaded_file)){
       
       file_to_compare = list_downloaded_file[ifile2]
       
-      if(md5sum(file_to_check) == md5sum(file_to_compare)){
+      if(tools::md5sum(file_to_check) == tools::md5sum(file_to_compare)){
         twin_file_exist = TRUE
         break
       }
