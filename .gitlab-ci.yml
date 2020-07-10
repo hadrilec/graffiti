@@ -1,6 +1,7 @@
 stages:
     - build
     - deploy
+    - update
 
 variables:
   CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj"
@@ -24,3 +25,8 @@ deploy:
     - 'curl -X POST http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID/restart?force=true'
   only:
     - master
+
+update:
+   stage: update
+   script:
+    - 'data_update.sh'
