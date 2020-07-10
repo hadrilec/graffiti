@@ -1,6 +1,6 @@
 #!/bin/bash
 
-location = $(which R)
-echo "folder : $R_location"
-
+#R_location = $(which R)
+echo "folder : $PWD"
+ls -ltr
 #R CMD BATCH /srv/shiny-server/function/data_update.R
