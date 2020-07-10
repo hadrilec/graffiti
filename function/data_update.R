@@ -1,4 +1,10 @@
-print(commandArgs())
+# print(commandArgs())
+
+Sys.setenv(AWS_ACCESS_KEY_ID = commandArgs()[8])
+Sys.setenv(AWS_SECRET_ACCESS_KEY = commandArgs()[9])
+Sys.setenv(AWS_S3_ENDPOINT = "minio.stable.innovation.insee.eu")
+Sys.setenv(AWS_DEFAULT_REGION = "us-east-1")
+Sys.setenv(no_proxy = "minio.stable.innovation.insee.eu")
 
 cat(getwd(), file = stderr())
 
