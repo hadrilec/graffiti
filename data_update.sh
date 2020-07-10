@@ -3,4 +3,4 @@
 #R_location = $(which R)
 echo "folder : $PWD"
 ls -ltr
-R CMD BATCH ./function/data_update.R
+./function/data_update.R
