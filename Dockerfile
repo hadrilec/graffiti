@@ -14,7 +14,7 @@ ADD ./*.sh /srv/shiny-server/
 #ADD ./data/ /srv/shiny-server/data/
 ADD ./code/ /srv/shiny-server/code/
 ADD ./function/ /srv/shiny-server/function/
-RUN chmod +x /function/data_update.R
+#RUN chmod +x /function/data_update.R
 
 ADD ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
