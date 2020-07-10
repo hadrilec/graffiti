@@ -19,6 +19,7 @@ ADD ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+ADD ./data_update.sh /data_update.sh
 RUN chmod +x /data_update.sh
 
 CMD ["/usr/bin/shiny-server.sh"]
