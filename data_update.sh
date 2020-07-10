@@ -1,7 +1,7 @@
 #!/bin/bash
 
 R_location = $(which R)
-echo "folder : $R_location"
+echo R_location
 
 echo "folder : $PWD"
 ls -ltr
