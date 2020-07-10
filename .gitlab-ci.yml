@@ -31,4 +31,4 @@ update:
    script:
     - 'chmod +x ./data_update.sh'
    # - './data_update.sh'
-   # - 'Rscript "./function/data_update.R"' 
+    - Rscript "./function/data_update.R"
