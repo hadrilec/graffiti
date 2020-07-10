@@ -3,4 +3,4 @@
 #R_location = $(which R)
 echo "folder : $PWD"
 ls -ltr
-#R CMD BATCH /srv/shiny-server/function/data_update.R
+R CMD BATCH ./function/data_update.R
