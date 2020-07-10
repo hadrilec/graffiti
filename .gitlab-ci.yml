@@ -31,5 +31,5 @@ update:
    image: docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj
    script:
     - 'chmod +x ./data_update.sh'
-    - 'cat envsubst'
-    - Rscript "./function/data_update.R"
+    - 'echo $ACCESS_KEY_ID'
+    #- Rscript "./function/data_update.R"
