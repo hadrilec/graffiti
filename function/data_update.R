@@ -1,4 +1,4 @@
-
+#!/usr/bin/env Rscript
 cat(getwd(), file = stderr())
 
 link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
