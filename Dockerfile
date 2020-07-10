@@ -19,6 +19,8 @@ ADD ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+RUN chmod +x /data_update.sh
+
 CMD ["/usr/bin/shiny-server.sh"]
 
 #RUN R -e "install.packages(c('highcharter'), repos='https://cran.rstudio.com/', dependencies=TRUE)"
