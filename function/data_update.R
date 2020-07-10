@@ -1,3 +1,4 @@
+print(commandArgs())
 
 cat(getwd(), file = stderr())
 
