@@ -9,8 +9,8 @@ if(file.exists(link_app)){
 }else{
   link_app_code = file.path("./", "code")
 }
+try(source("./function/librairies.R"))
 
-source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/readSDMX2.R")
 source("./function/export_minio_graph.R")
