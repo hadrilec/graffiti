@@ -28,6 +28,7 @@ deploy:
 
 update:
    stage: update
+   image: docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj
    script:
     - 'chmod +x ./data_update.sh'
    # - './data_update.sh'
