@@ -32,4 +32,5 @@ update:
    script:
     - 'chmod +x ./data_update.sh'
     - 'echo $ACCESS_KEY_ID'
-    #- Rscript "./function/data_update.R"
+    - './entrypoint.sh'
+    - Rscript "./function/data_update.R" $ACCESS_KEY_ID $SECRET_ACCESS_KEY
