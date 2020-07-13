@@ -7,14 +7,13 @@ Sys.setenv(AWS_DEFAULT_REGION = "us-east-1")
 Sys.setenv(no_proxy = "minio.stable.innovation.insee.eu")
 
 cat(getwd(), file = stderr())
+list_file_wd = list.files()
+cat(list_file_wd, file = stderr())
 
 link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
 
 if(file.exists(link_app)){
   setwd(link_app)
-  link_app_code = file.path(link_app, "code")
-}else{
-  link_app_code = file.path("./", "code")
 }
 
 try(source("./function/librairies.R"))

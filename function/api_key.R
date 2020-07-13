@@ -20,3 +20,9 @@ api_token_aqicn = "d2cec6e4da536c80809e27cfc169962408f18642"
 
 # QUANDL
 Quandl.api_key('ZQv7EfJg6xnzC-by17Kn')
+
+# IDBR
+if("idbr" %in% pkg_check[,1]){
+  library(idbr)
+  idb_api_key("35f116582d5a89d11a47c7ffbfc2ba309133f09d")
+}
