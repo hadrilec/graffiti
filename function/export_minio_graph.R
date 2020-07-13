@@ -35,7 +35,7 @@ export_minio_graph = function (plot, folder_name,
   if(create_code_html){
     if(file.exists(rmd_file)){
       if(!"try-error" %in% class(code_file)){
-        if(!basename(code_file) %in% c("server", "server.R")){
+        if(!basename(code_file) %in% c("server", "server.R", "data_update", "data_update.R")){
           t_file = tempfile()
 
           html_file_rmd =
@@ -94,7 +94,7 @@ export_minio_graph = function (plot, folder_name,
     link_used_file = try(rstudioapi::getSourceEditorContext()$path, silent = TRUE)
 
     if(class(save_code_file) != "try-error" & class(link_used_file) != "try-error"){
-      if(!basename(code_file) %in% c("server", "server.R")){
+      if(!basename(code_file) %in% c("server", "server.R", "data_update", "data_update.R")){
 
         aws.s3::s3write_using(link_used_file, FUN = file.copy,
                               bucket = "groupe-1360", object = minio_file_code_path,
