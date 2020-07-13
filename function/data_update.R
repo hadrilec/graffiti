@@ -6,6 +6,11 @@ Sys.setenv(AWS_S3_ENDPOINT = "minio.stable.innovation.insee.eu")
 Sys.setenv(AWS_DEFAULT_REGION = "us-east-1")
 Sys.setenv(no_proxy = "minio.stable.innovation.insee.eu")
 
+file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
+if(file.exists(file_minio_credentials)){
+  source(file_minio_credentials)
+}
+
 cat(getwd(), file = stderr())
 list_file_wd = list.files()
 cat(list_file_wd, file = stderr())
@@ -25,18 +30,18 @@ source("./function/export_minio_image.R")
 source("./function/update_DB_variable.R")
 
 list_R_files = data.frame(file = unlist(get_minio_all()), stringsAsFactors = F)
-list_R_files = list_R_files %>% 
+list_R_files = list_R_files %>%
   filter(str_detect(file, "_code$"))
 
 tempfile_ <- tempfile()
 
 for(i in 1:nrow(list_R_files)){
   file_dwn = paste0(tempfile_, i)
-  
-  aws.s3::save_object(list_R_files[i,1], 
+
+  aws.s3::save_object(list_R_files[i,1],
                       file = file_dwn,
                       bucket = "groupe-1360", use_https = F, region = "")
-  
+
 }
 
 list_downloaded_file = paste0(tempfile_, 1:nrow(list_R_files))
@@ -49,14 +54,14 @@ df_downloaded_file = data.frame(downloaded_file = list_downloaded_file,
 for (ifile in 1:length(list_downloaded_file)){
   # print(ifile)
   file_to_check = list_downloaded_file[ifile]
-  
+
   twin_file_exist = FALSE
-  
+
   if(ifile != length(list_downloaded_file)){
     for(ifile2 in (ifile+1):length(list_downloaded_file)){
-      
+
       file_to_compare = list_downloaded_file[ifile2]
-      
+
       if(tools::md5sum(file_to_check) == tools::md5sum(file_to_compare)){
         twin_file_exist = TRUE
         break
@@ -67,32 +72,33 @@ for (ifile in 1:length(list_downloaded_file)){
 }
 
 
-# 
+#
 # run all scripts
-# 
+#
 
 for (ifile in 1:nrow(df_downloaded_file)){
-  
+
   file_run = df_downloaded_file[ifile,"downloaded_file"]
   file_run_name = df_downloaded_file[ifile,"file"]
   twin_exist = df_downloaded_file[ifile,"twin_exist"]
-  print(file_run_name)
+
+  # print(file_run_name)
   # cat(file_run_name, file = stderr())
-  
+
   if(!twin_exist){
 
     run_message = try(source(file_run, encoding = "UTF-8"))
-    
+
     if(class(run_message) != "try-error"){
       check = "OK"
     }else{
       check = as.character(run_message)
     }
-    
+
   }else{
     check = "no run"
   }
-    
+
   df_downloaded_file[ifile,"check"] = check
 }
 
