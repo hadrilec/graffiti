@@ -73,6 +73,17 @@ for (ifile in 1:length(list_downloaded_file)){
 
 
 #
+# download all scripts
+#
+
+for (ifile in 1:nrow(df_downloaded_file)){
+
+  file_run_name = df_downloaded_file[ifile,"file"]
+  dwn_minio_file(file_run_name)
+
+}
+
+#
 # run all scripts
 #
 
@@ -81,7 +92,7 @@ for (ifile in 1:nrow(df_downloaded_file)){
   file_run = df_downloaded_file[ifile,"downloaded_file"]
   file_run_name = df_downloaded_file[ifile,"file"]
   twin_exist = df_downloaded_file[ifile,"twin_exist"]
-
+  # dwn_minio_file(file_run_name)
   # print(file_run_name)
   # cat(file_run_name, file = stderr())
 
