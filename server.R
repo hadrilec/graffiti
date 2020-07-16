@@ -722,8 +722,11 @@ shinyServer(function(input, output, session) {
   
   observe({
     list_graph_cahier = lapply(input$cahier, function(x) gg_react[[x]])
+    
     Print(cahier_file)
     Print(getwd())
+    Print(file.exists(cahier_file))
+    
     output$downloadCahier <- downloadHandler(
       filename = function() {
         paste("presentation_", gsub("-|:| |CET","", Sys.time()), ".pdf", sep="")
