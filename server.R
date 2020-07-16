@@ -169,8 +169,8 @@ shinyServer(function(input, output, session) {
             
             if(class(source_plot) != 'try-error'){
               
-              print('update completed')
-              
+              var_update  = 'update completed'
+              Print(var_update)
               update_plot_finished(sample(1:100))  
               
               
