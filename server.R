@@ -33,6 +33,8 @@ shinyServer(function(input, output, session) {
     DB_minio = unlist(get_minio_all())
   })
   
+  perimeter_selected <- reactive({input$select_perim})
+  
   link_code_file <- reactiveVal()
   
   gg_react <- reactiveValues()
@@ -118,43 +120,60 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(update_plot())){
       if(update_plot()){
-        if(!is.null(link_code_file())){
-          
-          print("plot update triggered ")
-          Print(link_code_file())
-          
-          run_time_plot_final = 30
-          
-          if(!is.null(run_time_plot())){
-            if(is.numeric(run_time_plot())){
-              run_time_plot_final = round(run_time_plot()) + 1
+        # if(!is.null(link_code_file())){
+          file_code = file.path("dataviz", perimeter_selected(), var_name(), paste0(var_name(), "_code"))
+          Print(file_code)
+          if(file_code %in% DB_minio_all()){
+            print("plot update triggered ")
+            # Print(link_code_file())
+            
+            # 
+            # download code file
+            # 
+            
+            file_dwn = tempfile()
+            
+            aws.s3::save_object(file_code,
+                                file = file_dwn,
+                                bucket = "groupe-1360", use_https = F, region = "")
+            
+            run_time_plot_final = 30
+            
+            if(!is.null(run_time_plot())){
+              if(is.numeric(run_time_plot())){
+                run_time_plot_final = round(run_time_plot()) + 1
+              }
+            }
+            
+            withProgress(message = 'MAJ du graphique', detail = "",{
+              # N = 60
+              for(i in 1:run_time_plot_final){
+                
+                # Long Running Task
+                Sys.sleep(1)
+                
+                # Update progress
+                incProgress(1/run_time_plot_final,
+                            detail = paste(round(i/run_time_plot_final*100), "%"))
+              }
+              # 
+              # execute code file
+              # 
+              
+              source_plot = try(source(file_dwn, encoding = "utf-8"))
+            })
+            
+            if(class(source_plot) != 'try-error'){
+              
+              print('update completed')
+              
+              update_plot_finished(sample(1:100))  
+              
+              
             }
           }
-          
-          withProgress(message = 'MAJ du graphique', detail = "",{
-                         # N = 60
-                         for(i in 1:run_time_plot_final){
-                           
-                           # Long Running Task
-                           Sys.sleep(1)
-                           
-                           # Update progress
-                           incProgress(1/run_time_plot_final,
-                                       detail = paste(round(i/run_time_plot_final*100), "%"))
-                         }
-                         
-                         source_plot = try(source(link_code_file(), encoding = "utf-8"))
-                       })
-          
-         if(class(source_plot) != 'try-error'){
-           
-           print('update completed')
-           
-           update_plot_finished(sample(1:100))  
-           
-  
-         }
-        }
+         
+        # }
       }
     }
     
