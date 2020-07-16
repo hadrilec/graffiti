@@ -30,9 +30,9 @@ update:
    stage: update
    image: docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj
    script:
-    - 'chmod +x ./data_update.sh'
-    - 'echo $ACCESS_KEY_ID'
+    #- 'chmod +x ./data_update.sh'
+    #- 'echo $ACCESS_KEY_ID'
     #- './entrypoint.sh'
-    - ulimit -s 100000 # enlarge stack limit to 16 megs
-    - R --slave -e 'Cstack_info()["size"]'
+    #- ulimit -s 100000 # enlarge stack limit to 16 megs
+    #- R --slave -e 'Cstack_info()["size"]'
     - Rscript "./function/data_update.R" $ACCESS_KEY_ID $SECRET_ACCESS_KEY
