@@ -83,11 +83,15 @@ shinyServer(function(input, output, session) {
 
     if(!is.null(update_plot())){
       if(update_plot()){
-        if(!is.null(link_code_file())){
-          if(file.exists(link_code_file())){
+        # if(!is.null(link_code_file())){
+          # if(file.exists(link_code_file())){
+        file_code = file.path("dataviz", perimeter_selected(), var_name(), paste0(var_name(), "_code"))
+       
+        if(file_code %in% DB_minio_all()){
             render_update_button = TRUE
-          }
         }
+          # }
+        # }
       }
     }
     if(input$select_title == ""){
