@@ -726,6 +726,7 @@ shinyServer(function(input, output, session) {
     Print(cahier_file)
     Print(getwd())
     Print(file.exists(cahier_file))
+    Print(Sys.getenv("PATH"))
     
     output$downloadCahier <- downloadHandler(
       filename = function() {
