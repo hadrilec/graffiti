@@ -723,11 +723,6 @@ shinyServer(function(input, output, session) {
   observe({
     list_graph_cahier = lapply(input$cahier, function(x) gg_react[[x]])
     
-    if(file.exists(link_app)){
-      path_global = Sys.getenv("PATH")
-      Sys.setenv(PATH = paste0(path_global, ";", "usr/bin/pandoc/"))
-    }
-    
     Print(cahier_file)
     Print(getwd())
     Print(file.exists(cahier_file))

@@ -42,6 +42,13 @@ data_format = "rds"
 chemin_prev = ""
 link_results =  "./data/resultats"
 
+if(!file.exists(link_app)){
+  path_global = Sys.getenv("PATH")
+  if(!str_detect(path_global, "pandoc")){
+    Sys.setenv(PATH = paste0(path_global, ";", "usr/bin/pandoc/"))
+  }
+}
+
 cahier_file = "./function/cahier.Rmd"
  
 # DB_var_file = file.path(".", "data", "resultats", "_files", "DB_variables.rds")
