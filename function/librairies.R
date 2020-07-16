@@ -24,12 +24,26 @@ library(plotly)
 library(RColorBrewer)
 library(ggthemes)
 
-list_pkg = c("magick", "slickR", "rdbnomics", "jsonline", "highcharter", "tools", "rwebstat", "rhandsontable")
-
-for(pkg_id in list_pkg){
-  if(pkg_id %in% pkg[,1]){
-    library(pkg_id)
-  }
+if("magick" %in% pkg[,1]){
+  library(magick)
+}
+if("slickR" %in% pkg[,1]){
+  library(slickR)
+}
+if("highcharter" %in% pkg[,1]){
+  library(highcharter)
+}
+if("tools" %in% pkg[,1]){
+  library(tools)
+}
+if("rdbnomics" %in% pkg[,1]){
+  library(rdbnomics)
+}
+if("jsonline" %in% pkg[,1]){
+  library(jsonline)
+}
+if("rwebstat" %in% pkg[,1]){
+  library(rwebstat)
 }
 #library(fredr)
 library(eia)
