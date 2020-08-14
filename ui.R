@@ -13,7 +13,7 @@ shinyUI(
                           tags$style(type='text/css', ".selectize-dropdown-content { max-height: 600px; }"),
                           
                           conditionalPanel(
-                            condition = "input.tabs_menu == '8'",
+                            condition = "input.tabs_menu != '9'",
                           pickerInput("select_perim",
                                       label = NULL,
                                       choices = countries,
@@ -26,7 +26,7 @@ shinyUI(
                                       choicesOpt = list(content = icons_perims)
                           )),
                           conditionalPanel(
-                            condition = "input.tabs_menu == '8'",
+                            condition = "input.tabs_menu != '9'",
                           selectizeInput(
                             'select_title', 
                             size = 30,
@@ -39,7 +39,7 @@ shinyUI(
                             )
                           ))
                           , conditionalPanel(
-                            condition = "input.tabs_menu == '8'",
+                            condition = "input.tabs_menu != '9'",
                             actionButton("MAJ_dico", label = "MAJ du catalogue", icon("refresh")))
                           
                         # )#cond panel 8
@@ -48,14 +48,17 @@ shinyUI(
     
     dashboardSidebar(width=285,
                      sidebarMenu(id = "tabs_menu",
-                                 menuItem("Graphiques", tabName = "8",
+                                 menuItem("Graphiques International", tabName = "8",
+                                          icon = icon("chart-area"),startExpanded = F),
+                                 
+                                 menuItem("Graphiques France", tabName = "7",
                                           icon = icon("chart-area"),startExpanded = F),
                                  
                                  menuItem("Tableau de bord", tabName = "9",
                                           icon = icon("desktop"),startExpanded = F),
                                 
                                  conditionalPanel(
-                                   condition = "input.tabs_menu == '8'",
+                                   condition = "input.tabs_menu != '9'",
                                fluidRow(
                                  tags$style(type = "text/css", "#downloadData {color: black; margin-left:75px;}"),
                                  downloadButton("downloadData", label = "Télécharger les données")

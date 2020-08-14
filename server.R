@@ -23,9 +23,17 @@ shinyServer(function(input, output, session) {
   
   DB_variables_react <- reactive({
     Print(input$MAJ_dico)
-    DB_variable = update_DB_variable()
-    DB_variable %>% 
-      arrange(perim)
+    Print(input$tabs_menu)
+    
+    DB_variable = update_DB_variable() %>% 
+      arrange(perim) 
+    
+    if(input$tabs_menu == 7){
+      DB_variable = 
+        DB_variable %>% 
+        filter(str_detect(perim, "^FR-"))
+    }
+    DB_variable
   })
   
   DB_minio_all <- reactive({
@@ -183,11 +191,34 @@ shinyServer(function(input, output, session) {
     
   })
   
+  observeEvent({
+    input$tabs_menu
+  },{
+    if(input$tabs_menu == 8){
+     
+      updatePickerInput(
+        session = session, 
+        inputId = "select_perim",
+        choices = countries,
+        choicesOpt = list(content = icons_perims))
+      
+    }else if(input$tabs_menu == 7){
+      
+      updatePickerInput(
+        session = session, 
+        inputId = "select_perim",
+        choices = insee_perim$insee_dt_id,
+        choicesOpt = list(content = insee_perim$insee_dt))
+      
+    }
+  })
   
   # 
   # MAJ des variables et titres proposés en fonction du périmètre indiqué ####
   # 
-  observeEvent({input$select_perim},{
+  observeEvent({
+    input$select_perim
+    },{
     
     perim <- input$select_perim
     
@@ -290,6 +321,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent({
+    input$tabs_menu
     input$select_title
     input$interact_plot
     update_plot_finished()
