@@ -4,7 +4,7 @@ export_minio_graph = function (plot, folder_name,
                                rmd_file = "M:/Usuels.dsc/pRev/fonctions/read_code.Rmd",
                                create_code_html = TRUE,
                                export_code = TRUE,
-                               update = FALSE)
+                               update = TRUE)
 {
   if(!("ggplot" %in% class(plot) | "highchart" %in% class(plot))){
     warning("!!! plot is not a ggplot or highchart plot !!!")

@@ -3,15 +3,15 @@
 shinyUI(
   dashboardPagePlus(
     enable_preloader = F,
-    dashboardHeaderPlus(title = "DataViz",
+    dashboardHeaderPlus(
+      # titlePanel(title=div(img(src="graffiti.PNG"), "")),
+      # title = "Graffiti",
+      title = div(img(src="graffiti.PNG", width="70%"), ""),
                         titleWidth = 285,
                         enable_rightsidebar = FALSE,
                         left_menu = tagList(
-                       
-                           
-                          
                           tags$style(type='text/css', ".selectize-dropdown-content { max-height: 600px; }"),
-                          
+
                           conditionalPanel(
                             condition = "input.tabs_menu != '9'",
                           pickerInput("select_perim",
@@ -28,7 +28,7 @@ shinyUI(
                           conditionalPanel(
                             condition = "input.tabs_menu != '9'",
                           selectizeInput(
-                            'select_title', 
+                            'select_title',
                             size = 30,
                             label = NULL,
                             width = "600px",
@@ -41,36 +41,36 @@ shinyUI(
                           , conditionalPanel(
                             condition = "input.tabs_menu != '9'",
                             actionButton("MAJ_dico", label = "MAJ du catalogue", icon("refresh")))
-                          
+
                         # )#cond panel 8
                         )
                         ),
-    
+
     dashboardSidebar(width=285,
                      sidebarMenu(id = "tabs_menu",
                                  menuItem("Graphiques International", tabName = "8",
                                           icon = icon("chart-area"),startExpanded = F),
-                                 
+
                                  menuItem("Graphiques France", tabName = "7",
                                           icon = icon("chart-area"),startExpanded = F),
-                                 
+
                                  menuItem("Tableau de bord", tabName = "9",
                                           icon = icon("desktop"),startExpanded = F),
-                                
+
                                  conditionalPanel(
                                    condition = "input.tabs_menu != '9'",
                                fluidRow(
                                  tags$style(type = "text/css", "#downloadData {color: black; margin-left:75px;}"),
                                  downloadButton("downloadData", label = "Télécharger les données")
                                ),
-                               
+
                                materialSwitch(
                                  inputId = "interact_plot",
-                                 label = "Graphique intéractif", 
+                                 label = "Graphique intéractif",
                                  value = FALSE,
                                  status = "primary"
                                ),
-                           
+
                                fluidRow(
                                  uiOutput("MAJ_plot"),
                                  tags$style(type = "text/css", "#MAJ_plot {color: black; margin-left:45px;}")
@@ -78,7 +78,7 @@ shinyUI(
                                fluidRow(
                                  tags$style(type = "text/css", "#cahier {display: inline-block;color: black; margin-left:45px;}"),
                                  selectizeInput(
-                                   'cahier', 
+                                   'cahier',
                                    label = "Créer une présentation",
                                    size = 30,
                                    width = "300px",
@@ -102,14 +102,21 @@ shinyUI(
     ),
     ## Body content
     dashboardBody(
+    #   tags$head(tags$style(HTML('
+    #   .main-header .logo {
+    #     font-family: "Georgia", Times, "Times New Roman", serif;
+    #     font-weight: bold;
+    #     font-size: 24px;
+    #   }
+    # '))),
       # fluidRow()
       # useShinyjs(),
-      
+
       # tags$head(tags$style(
       #   type="text/css",
       #   "#Image img {max-width: 100%; width: 100%; height: auto}"
       # )),
-      
+
       tabItems(
         tabItem(tabName = "8",
              fluidRow(
