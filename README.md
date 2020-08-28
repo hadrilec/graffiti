@@ -1,6 +1,6 @@
-# dataviz_conj
+# Graffiti
 
 
 Application r-shiny pour visualiser des données
-https://dataviz-conj.dev.innovation.insee.eu/
+https://graffiti.dev.innovation.insee.eu/
 
