@@ -34,7 +34,7 @@
   ],
   "labels": {
     "HAPROXY_GROUP": "external",
-    "HAPROXY_0_VHOST": "dataviz-conj.dev.innovation.insee.eu",
+    "HAPROXY_0_VHOST": "graffiti.dev.innovation.insee.eu",
     "HAPROXY_0_ENABLED": "true",
     "HAPROXY_0_REDIRECT_TO_HTTPS": "true",
     "HAPROXY_0_FRONTEND_HEAD": "",
