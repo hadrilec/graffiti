@@ -202,20 +202,28 @@ shinyServer(function(input, output, session) {
   },{
     if(input$tabs_menu == 8){
 
+      countries2 = countries[!str_detect(countries, "^FR-")]
+      icons_perims2 = icons_perims[!str_detect(icons_perims, "^FR-")]
+
       updatePickerInput(
         session = session,
         inputId = "select_perim",
-        choices = countries,
-        choicesOpt = list(content = icons_perims))
+        choices = countries2,
+        choicesOpt = list(content = icons_perims2))
 
 
     }else if(input$tabs_menu == 7){
 
+      other_perim = DB_variables_react() %>%
+        filter(str_detect(perim, "^FR-")) %>%
+        pull(perim) %>%
+        as.character()
+
       updatePickerInput(
         session = session,
         inputId = "select_perim",
-        choices = insee_perim$insee_dt_id,
-        choicesOpt = list(content = insee_perim$insee_dt))
+        choices = c(insee_perim$insee_dt_id, other_perim),
+        choicesOpt = list(content = c(insee_perim$insee_dt, other_perim)))
 
 
     }

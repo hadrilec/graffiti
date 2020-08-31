@@ -524,4 +524,4 @@ insee_dt = c(
   'FR-VOV-2015-COMMERCE : Volumes des ventes dans le commerce'
 )
 
-insee_perim = data.frame(insee_dt_id = insee_dt_id, insee_dt = insee_dt)
+insee_perim = data.frame(insee_dt_id = insee_dt_id, insee_dt = insee_dt, stringsAsFactors = FALSE)
