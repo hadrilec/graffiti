@@ -17,6 +17,9 @@ source("./function/export_minio_graph.R")
 source("./function/export_minio_image.R")
 source("./function/readSDMX2.R")
 
+# idbank_list_title_file = "./data/idbank_list_title.RData"
+# idbank_list_title = readRDS(idbank_list_title_file)
+
 pkg = installed.packages()
 
 Print(getwd())
@@ -51,7 +54,7 @@ if(!file.exists(link_app)){
 }
 
 cahier_file = "./function/cahier.Rmd"
- 
+
 # DB_var_file = file.path(".", "data", "resultats", "_files", "DB_variables.rds")
 
 # MAJ de la base de données des noms des variables toutes les heures
@@ -65,10 +68,10 @@ cahier_file = "./function/cahier.Rmd"
 # DB_variables = readRDS(DB_var_file)
 DB_variables = update_DB_variable()
 
-perimetre_list = 
-  DB_variables %>% 
-  pull(perim) %>% 
-  unique() %>% 
+perimetre_list =
+  DB_variables %>%
+  pull(perim) %>%
+  unique() %>%
   sort()
 
 countries <- c("FR", "DE", "UK", "ES", "IT", "CN", "JP", "ZE", "US", "OIL", "FI", "COM", "INF")
@@ -78,9 +81,9 @@ if(length(perimetre_added) > 0){
   countries = c(countries, perimetre_list[perimetre_added])
 }
 
-# 
+#
 # COUNTRI FLAG
-# 
+#
 
 flags_id_list = c("fr", "de", "gb", "es", "it",
                          "cn", "jp", "eu", "us")
@@ -105,22 +108,22 @@ icons_perims = c(icons_perims,
                  paste(as.character(icon("shopping-cart")), " " ,"Inflation"))
 
 if("insee" %in% pkg[1,]){
-  insee_dataset = 
-    get_dataset_list() %>% 
-    drop_na() %>% 
-    mutate(name = paste(paste0("FR-",id), ":", Name.fr)) %>% 
-    pull(name) %>% 
-    gsub("'|,", "", .) %>% 
+  insee_dataset =
+    get_dataset_list() %>%
+    drop_na() %>%
+    mutate(name = paste(paste0("FR-",id), ":", Name.fr)) %>%
+    pull(name) %>%
+    gsub("'|,", "", .) %>%
     paste0(collapse = "','")
-  
-  insee_dataset_id = 
-    get_dataset_list() %>% 
-    drop_na() %>% 
-    mutate(name = paste(paste0("FR-",id))) %>% 
-    pull(name) %>% 
-    gsub("'|,", "", .) %>% 
+
+  insee_dataset_id =
+    get_dataset_list() %>%
+    drop_na() %>%
+    mutate(name = paste(paste0("FR-",id))) %>%
+    pull(name) %>%
+    gsub("'|,", "", .) %>%
     paste0(collapse = "','")
-  
+
 }
 
 

@@ -33,6 +33,11 @@ shinyServer(function(input, output, session) {
         DB_variable %>%
         filter(str_detect(perim, "^FR-"))
     }
+    if(input$tabs_menu == 8){
+      DB_variable =
+        DB_variable %>%
+        filter(!str_detect(perim, "^FR-"))
+    }
     DB_variable
   })
 

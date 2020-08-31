@@ -86,6 +86,7 @@ for (ifile in 1:nrow(df_downloaded_file)){
 #
 # run all scripts
 #
+app_directory = getwd()
 
 for (ifile in 1:nrow(df_downloaded_file)){
 
@@ -96,9 +97,12 @@ for (ifile in 1:nrow(df_downloaded_file)){
   # print(file_run_name)
   # cat(file_run_name, file = stderr())
 
+
+
   if(!twin_exist){
 
     run_message = try(source(file_run, encoding = "UTF-8"))
+    setwd(app_directory)
 
     if(class(run_message) != "try-error"){
       check = "OK"
