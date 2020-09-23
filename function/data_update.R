@@ -86,7 +86,7 @@ for (ifile in 1:nrow(df_downloaded_file)){
 #
 # run all scripts
 #
-app_directory = getwd()
+# app_directory = getwd()
 
 for (ifile in 1:nrow(df_downloaded_file)){
 
@@ -101,8 +101,21 @@ for (ifile in 1:nrow(df_downloaded_file)){
 
   if(!twin_exist){
 
-    run_message = try(source(file_run, encoding = "UTF-8"))
-    setwd(app_directory)
+    # eviter les erreurs sur le serveur, pas de liens vers des fichiers externes
+    con <- file(file_run, open = 'r')
+    while(TRUE) {
+      line <- readLines(con, n = 1)
+      
+      if(length(line) == 0) break
+      else if(!str_detect(line, "rm\\(|setwd\\(|source\\(")){
+        write(line, file = paste0(file_run, "_clean"), append = TRUE)
+      }else{
+        print(sprintf("line skipped : %s", line))
+      }
+    }
+    
+    run_message = try(source(paste0(file_run, "_clean"), encoding = "UTF-8"))
+    # setwd(app_directory)
 
     if(class(run_message) != "try-error"){
       check = "OK"
