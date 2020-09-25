@@ -45,12 +45,15 @@ if("jsonline" %in% pkg[,1]){
 if("rwebstat" %in% pkg[,1]){
   library(rwebstat)
 }
-library(insee)
-# if("insee" %in% pkg[,1]){
-#   # library(insee)
-# }
+# library(insee)
+if("insee" %in% pkg[,1]){
+  library(insee)
+}
+if("eia" %in% pkg[,1]){
+  library(eia)
+}
 #library(fredr)
-library(eia)
+
 library(saqgetr)
 library(eurostat)
 # library(idbr)
