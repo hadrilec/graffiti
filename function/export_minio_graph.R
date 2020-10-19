@@ -9,6 +9,24 @@ export_minio_graph = function (plot, folder_name,
   if(!("ggplot" %in% class(plot) | "highchart" %in% class(plot))){
     warning("!!! plot is not a ggplot or highchart plot !!!")
   }
+  
+  pkg = installed.packages()
+  
+  if(!"rstudioapi" %in% pkg[,1]){
+    stop("Please download rstudioapi R package")
+  }
+  if(!"lubridate" %in% pkg[,1]){
+    stop("Please download lubridate R package")
+  }
+  
+  time_now = sprintf("Fait le : %s", lubridate::with_tz(lubridate::now(), "Europe/Paris"))
+    
+  subtt = plot$labels$subtitle
+  if(is.null(subtt)){
+    plot$labels$subtitle = time_now
+  }else{
+    plot$labels$subtitle = sprintf("%s\n%s", subtt, time_now)
+  }
 
   file_minio_credentials = "M:/Usuels.dsc/pRev/fonctions/minio_aws_access.R"
   if(file.exists(file_minio_credentials)){
