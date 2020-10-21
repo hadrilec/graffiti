@@ -20,11 +20,13 @@ shinyUI(
                                       width = 200,
                                       selected = NULL,
                                       multiple = FALSE,
-                                      options = pickerOptions(
+
+                                              options = pickerOptions(
                                         maxOptions = 1,
                                         title = 'Sélectionner un périmètre'),
                                       choicesOpt = list(content = icons_perims)
-                          )),
+                          )
+                          ),
                           conditionalPanel(
                             condition = "input.tabs_menu != '9'",
                           selectizeInput(

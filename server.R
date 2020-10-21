@@ -286,7 +286,7 @@ shinyServer(function(input, output, session) {
       as.data.frame()
 
       dico_table = dico_table %>%
-        DT::datatable(filter = "top", selection = "single") %>%
+        DT::datatable(filter = "top", selection = "single", options = list(pageLength = 100)) %>%
         DT::formatStyle(0, lineHeight = '10px', target= 'row')
 
 
