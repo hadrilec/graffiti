@@ -52,14 +52,28 @@ if("insee" %in% pkg[,1]){
 if("eia" %in% pkg[,1]){
   library(eia)
 }
-#library(fredr)
+if("eurostat" %in% pkg[,1]){
+  library(eurostat)
+}
+if("saqgetr" %in% pkg[,1]){
+  library(saqgetr)
+}
+if("Quandl" %in% pkg[,1]){
+  library(Quandl)
+}
+if("rsdmx" %in% pkg[,1]){
+  library(rsdmx)
+}
+if("pdfetch" %in% pkg[,1]){
+  library(pdfetch)
+}
+if("RJSONIO" %in% pkg[,1]){
+  library(RJSONIO)
+}
+if("xml2" %in% pkg[,1]){
+  library(xml2)
+}
+if("rvest" %in% pkg[,1]){
+  library(rvest)
+}
 
-library(saqgetr)
-library(eurostat)
-# library(idbr)
-library(Quandl)
-library(rsdmx)
-library(pdfetch)
-library(RJSONIO)
-library(xml2)
-library(rvest)
