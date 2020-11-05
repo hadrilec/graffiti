@@ -76,4 +76,7 @@ if("xml2" %in% pkg[,1]){
 if("rvest" %in% pkg[,1]){
   library(rvest)
 }
+if("BARIS" %in% pkg[,1]){
+  library(BARIS)
+}
 
