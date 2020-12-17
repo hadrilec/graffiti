@@ -4,7 +4,7 @@ library(tidyverse)
 library(lubridate)
 library(zoo)
 
-time1 = Sys.time()
+time1 = Sys.time() 
 
 # DATA SOURCE : AIR BASE
 # https://www.eea.europa.eu/data-and-maps/data/airbase-the-european-air-quality-database-7
