@@ -16,6 +16,8 @@ source("./function/update_DB_variable.R")
 source("./function/export_minio_graph.R")
 source("./function/export_minio_image.R")
 source("./function/readSDMX2.R")
+source("./function/add_style.R")
+source("./function/gg_plotly.R")
 
 # idbank_list_title_file = "./data/idbank_list_title.RData"
 # idbank_list_title = readRDS(idbank_list_title_file)
@@ -125,6 +127,28 @@ if("insee" %in% pkg[1,]){
     paste0(collapse = "','")
 
 }
+
+
+id = insee:::idbank_list_internal
+
+idbank_list = insee::get_idbank_list()
+idbank_list_all = id$idbank
+
+id_fr = id %>%
+  select(nomflow, idbank, cleFlow, title_fr, dplyr::starts_with("dim")) %>% 
+  dplyr::rename(title = title_fr)
+
+idbank_list_all_label_fr = paste(id$idbank, ":", id$title_fr)
+
+dataset_list = insee::get_dataset_list()
+
+dataset_list_selectize =
+  dataset_list %>%
+  dplyr::filter(id %in% unique(idbank_list$nomflow))
+
+dataset_list_id = dataset_list_selectize$id
+
+dataset_list_selectize_fr = paste(dataset_list_selectize$id, ":", dataset_list_selectize$Name.fr)
 
 
 insee_dt_id =
