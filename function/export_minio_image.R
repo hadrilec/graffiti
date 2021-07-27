@@ -32,15 +32,15 @@ export_minio_image <- function(link_image, perim, folder_name, title){
   print(minio_file_path)
   # export image
   aws.s3::s3write_using(link_image, FUN = file.copy,
-                        bucket = "groupe-1360", object = minio_file_path,
-                        opts = list("use_https" = F, "region" = ""))
+                        bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_path,
+                        opts = list( "region" = ""))
   
   minio_title_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_", image_type, "_title"))
  
   # export image title
   aws.s3::s3write_using(df, FUN = saveRDS,
-                        bucket = "groupe-1360", object = minio_title_path,
-                        opts = list("use_https" = F, "region" = ""))
+                        bucket = Sys.getenv("AWS_BUCKET"), object = minio_title_path,
+                        opts = list( "region" = ""))
   
 }
 

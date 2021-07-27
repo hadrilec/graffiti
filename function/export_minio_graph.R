@@ -70,8 +70,8 @@ export_minio_graph = function (plot, folder_name,
             if(file.exists(paste0(t_file,".html"))){
 
               aws.s3::s3write_using(paste0(t_file, ".html"), FUN = file.copy,
-                                    bucket = "groupe-1360", object = minio_file_html_path,
-                                    opts = list("use_https" = F, "region" = ""))
+                                    bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_html_path,
+                                    opts = list( "region" = ""))
 
               print(minio_file_html_path)
 
@@ -96,8 +96,8 @@ export_minio_graph = function (plot, folder_name,
   #
 
   aws.s3::s3write_using(gg, FUN = saveRDS,
-                bucket = "groupe-1360", object = minio_file_path,
-                opts = list("use_https" = F, "region" = ""))
+                bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_path,
+                opts = list( "region" = ""))
 
 
   #
@@ -115,8 +115,8 @@ export_minio_graph = function (plot, folder_name,
       if(!basename(code_file) %in% c("server", "server.R", "data_update", "data_update.R")){
 
         aws.s3::s3write_using(link_used_file, FUN = file.copy,
-                              bucket = "groupe-1360", object = minio_file_code_path,
-                              opts = list("use_https" = F, "region" = ""))
+                              bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_code_path,
+                              opts = list( "region" = ""))
 
         print(minio_file_code_path)
       }
