@@ -4,7 +4,7 @@ stages:
     - update
 
 variables:
-  CONTAINER_RELEASE_API: "docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj"
+  CONTAINER_RELEASE_API: "git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest"
 
 package:
   # Use stage build here, so the pages job may later pickup the created site.
@@ -17,8 +17,6 @@ package:
 
 deploy:
   stage: deploy
-  tags:
-    - maven
   script:
     - 'APP_ID=`cat marathon.json | jq .id -r`'
     - 'cat marathon.json | envsubst | curl -d@- -H "Content-Type: application/json" -X PUT http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID?force=true'
@@ -28,7 +26,7 @@ deploy:
 
 update:
    stage: update
-   image: docker-registry.beta.innovation.insee.eu/conjoncture1/dataviz-conj
+   image: git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest
    script:
     #- 'chmod +x ./data_update.sh'
     #- 'echo $ACCESS_KEY_ID'
