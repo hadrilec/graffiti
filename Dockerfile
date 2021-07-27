@@ -18,6 +18,10 @@ ADD ./function/ /srv/shiny-server/function/
 ADD ./www/ /srv/shiny-server/www/
 #RUN chmod +x /function/data_update.R
 
+ADD ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
 #ADD ./data_update.sh /data_update.sh
 #RUN chmod +x /data_update.sh
 
