@@ -9,8 +9,6 @@ variables:
 package:
   # Use stage build here, so the pages job may later pickup the created site.
   stage: build
-  tags:
-    - maven
   script:
     - 'docker build -t $CONTAINER_RELEASE_API .'
     - 'docker push $CONTAINER_RELEASE_API'
