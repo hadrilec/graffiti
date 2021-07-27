@@ -1,34 +1,22 @@
 stages:
     - build
-    - deploy
-    - update
 
-variables:
-  CONTAINER_RELEASE_API: "git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest"
-
-package:
-  # Use stage build here, so the pages job may later pickup the created site.
+build:
   stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - 'docker build -t $CONTAINER_RELEASE_API .'
-    - 'docker push $CONTAINER_RELEASE_API'
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --registry-mirror registry-cache.lab.sspcloud.fr --destination $CI_REGISTRY/$CI_PROJECT_PATH:$CI_COMMIT_TAG
 
-deploy:
-  stage: deploy
-  script:
-    - 'APP_ID=`cat marathon.json | jq .id -r`'
-    - 'cat marathon.json | envsubst | curl -d@- -H "Content-Type: application/json" -X PUT http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID?force=true'
-    - 'curl -X POST http://deploy.alpha.innovation.insee.eu/v2/apps/$APP_ID/restart?force=true'
-  only:
-    - master
-
-update:
-   stage: update
-   image: git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest
-   script:
+#update:
+   #stage: update
+   #image: git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest
+   #script:
     #- 'chmod +x ./data_update.sh'
     #- 'echo $ACCESS_KEY_ID'
     #- './entrypoint.sh'
     #- ulimit -s 100000 # enlarge stack limit to 16 megs
     #- R --slave -e 'Cstack_info()["size"]'
-    - Rscript "./function/data_update.R" $ACCESS_KEY_ID $SECRET_ACCESS_KEY
+    #- Rscript "./function/data_update.R" $ACCESS_KEY_ID $SECRET_ACCESS_KEY
