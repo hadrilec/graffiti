@@ -1,5 +1,5 @@
 
-link_data = "C:Users/XLAPDO/Desktop/app/data/resultats"
+link_data = "C:/Users/XLAPDO/Desktop/app/data/resultats"
 
 # périmètre du graphique
 perimetre = "FR"

@@ -5,23 +5,22 @@ library(insee)
 dataset = get_dataset_list()
 
 # get INSEE series key (idbank) list
-idbank_list = get_idbank_list()
+idbank_list = get_idbank_list("CNT-2014-PIB-EQB-RF") # Gross domestic product balance
 
 # select idbanks 
 df_idbank_list_selected =
   idbank_list %>%
-  filter(nomflow == "CNT-2014-PIB-EQB-RF") %>% # Gross domestic product balance
-  filter(dim1 == "T") %>% #quarter
-  filter(dim4 == "PIB") %>% #GDP
-  filter(dim6 == "TAUX") %>% #rate
-  filter(dim10 == "CVS-CJO") %>%  #SA-WDA, seasonally adjusted, working day adjusted
+  filter(FREQ == "T") %>% #quarter
+  filter(OPERATION == "PIB") %>% #GDP
+  filter(NATURE == "TAUX") %>% #rate
+  filter(CORRECTION == "CVS-CJO") %>%  #SA-WDA, seasonally adjusted, working day adjusted
   add_insee_title()
 
 # extract selected idbanks list
 idbank = df_idbank_list_selected %>% pull(idbank)
 
 # get data from idbank
-data = get_insee_idbank("")
+data = get_insee_idbank(idbank)
 
 #plot
 gg_pib = 
