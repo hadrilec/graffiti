@@ -25,7 +25,6 @@ delete_minio = function (variable, perim){
   for(file_ in list_file){
     if(file_ %in% minio_path_selected){
      
-      aws.s3::delete_object(bucket = Sys.getenv("AWS_BUCKET"),
                             object = file_,
                             use_https = T,
                             region = "")

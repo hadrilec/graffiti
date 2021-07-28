@@ -5,6 +5,7 @@ echo -e " \
 \nAWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
 \nAWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 \nAWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+\nAWS_BUCKET=$AWS_BUCKET \
 \nPATH=$PATH
 " >> /usr/local/lib/R/etc/Renviron.site 
 exec "$@"
