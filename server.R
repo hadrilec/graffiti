@@ -6,18 +6,18 @@ shinyServer(function(input, output, session) {
   output$slide_show <- renderUI({
     if("slickR" %in% pkg[,1]){
 
-      gg1 = try(s3read_using(FUN = readRDS,
-                            object = "dataviz/FR/pollution_idf/pollution_idf_gg_plot",
-                            bucket = "groupe-1360",
-                            opts = list("use_https" = F, "region" = "")), silent = T)
-
-      gg2 = try(s3read_using(FUN = readRDS,
-                            object = "dataviz/FI/epargne_fr/epargne_fr_gg_plot",
-                            bucket = "groupe-1360",
-                            opts = list("use_https" = F, "region" = "")), silent = T)
-
-      slickR::slickR(obj = list(gg1, gg2), height = 100, width = "95%") +
-        settings(dots = TRUE, autoplay = TRUE)
+      # gg1 = try(s3read_using(FUN = readRDS,
+      #                       object = "dataviz/FR/pollution_idf/pollution_idf_gg_plot",
+      #                       bucket = "groupe-1360",
+      #                       opts = list("use_https" = F, "region" = "")), silent = T)
+      # 
+      # gg2 = try(s3read_using(FUN = readRDS,
+      #                       object = "dataviz/FI/epargne_fr/epargne_fr_gg_plot",
+      #                       bucket = "groupe-1360",
+      #                       opts = list("use_https" = F, "region" = "")), silent = T)
+      # 
+      # slickR::slickR(obj = list(gg1, gg2), height = 100, width = "95%") +
+      #   settings(dots = TRUE, autoplay = TRUE)
     }
   })
 
@@ -153,7 +153,7 @@ shinyServer(function(input, output, session) {
 
             aws.s3::save_object(file_code,
                                 file = file_dwn,
-                                bucket = "groupe-1360", use_https = F, region = "")
+                                bucket = Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
 
             run_time_plot_final = 30
 
@@ -418,8 +418,8 @@ shinyServer(function(input, output, session) {
 
                     gg = try(s3read_using(FUN = readRDS,
                                           object = minio_file_path,
-                                          bucket = "groupe-1360",
-                                          opts = list("use_https" = F, "region" = "")), silent = T)
+                                          bucket = Sys.getenv("AWS_BUCKET"),
+                                          opts = list("use_https" = T, "region" = "")), silent = T)
 
                     if(!"try-error" %in% class(gg)){
                       read_message = "minio"
@@ -564,8 +564,8 @@ shinyServer(function(input, output, session) {
 
                         tmpfile <-
                           get_object(minio_file_path,
-                                     bucket = "groupe-1360",
-                                     use_https = F, region = "") %>%
+                                     bucket = Sys.getenv("AWS_BUCKET"),
+                                     use_https = T, region = "") %>%
                           magick::image_read() %>%
                           magick::image_write(tempfile(fileext = paste0(".", image_format)),
                                               format = image_format)
@@ -601,7 +601,8 @@ shinyServer(function(input, output, session) {
                     dwn_html =
                       try(aws.s3::save_object(minio_file_path_html,
                                               file = file_dwn,
-                                              bucket = "groupe-1360", use_https = F, region = ""))
+                                              bucket = Sys.getenv("AWS_BUCKET"),
+                                              use_https = T, region = ""))
 
 
                     if(!"try-error" %in% class(dwn_html)){
