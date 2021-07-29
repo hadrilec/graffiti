@@ -70,6 +70,7 @@ export_minio_graph = function (plot, folder_name,
 
               aws.s3::s3write_using(paste0(t_file, ".html"), FUN = file.copy,
                                     bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_html_path,
+                                    opts = list("use_https" = T, "region" = ""))
 
               print(minio_file_html_path)
 
