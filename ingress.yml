@@ -13,6 +13,6 @@ rules:
     http:
       paths:
         - path: /
-        backend:
-          serviceName: graffiti
-          servicePort: http
+          backend:
+            serviceName: graffiti
+            servicePort: http
