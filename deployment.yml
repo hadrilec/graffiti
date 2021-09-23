@@ -4,9 +4,9 @@ metadata:
   name: graffiti
 spec:
   replicas: 1
-selector:
-  matchLabels:
-  app: graffiti
+  selector:
+    matchLabels:
+    app: graffiti
 template:
   metadata:
     labels:
