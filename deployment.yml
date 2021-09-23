@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graffiti
+spec:
+  replicas: 1
+selector:
+  matchLabels:
+  app: graffiti
+template:
+  metadata:
+    labels:
+      app: graffiti
+  spec:
+    containers:
+      - name: graffiti
+        image: git-registry.lab.sspcloud.fr/hadrilec/graffiti:latest
