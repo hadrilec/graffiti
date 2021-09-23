@@ -7,9 +7,9 @@ metadata:
 spec:
   tls:
   - hosts:
-  - graffiti.inseefrlab.com
+  - graffiti.sspcloud.fr
 rules:
-  - host: graffiti.inseefrlab.com
+  - host: graffiti.sspcloud.fr
   http:
     paths:
       - path: /
