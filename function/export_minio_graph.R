@@ -64,14 +64,13 @@ export_minio_graph = function (plot, folder_name,
                                 params = list(code_file = link_used_file_))
             )
 
-          minio_file_html_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_html"))
 
           if(!"try-error" %in% class(html_file_rmd)){
             if(file.exists(paste0(t_file,".html"))){
 
               aws.s3::s3write_using(paste0(t_file, ".html"), FUN = file.copy,
-                                    bucket = "groupe-1360", object = minio_file_html_path,
-                                    opts = list("use_https" = F, "region" = ""))
+                                    bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_html_path,
+                                    opts = list("use_https" = T, "region" = ""))
 
               print(minio_file_html_path)
 
@@ -87,7 +86,7 @@ export_minio_graph = function (plot, folder_name,
   plot$run_time <- run_time
   gg = plot
 
-  minio_file_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_gg_plot"))
+  minio_file_path = file.path("graffiti", perim, folder_name, paste0(folder_name, "_gg_plot"))
 
   print(minio_file_path)
 
@@ -96,8 +95,8 @@ export_minio_graph = function (plot, folder_name,
   #
 
   aws.s3::s3write_using(gg, FUN = saveRDS,
-                bucket = "groupe-1360", object = minio_file_path,
-                opts = list("use_https" = F, "region" = ""))
+                bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_path,
+                opts = list("use_https" = T, "region" = ""))
 
 
   #
@@ -106,7 +105,7 @@ export_minio_graph = function (plot, folder_name,
 
   if(export_code){
 
-    minio_file_code_path = file.path("dataviz", perim, folder_name, paste0(folder_name, "_code"))
+    minio_file_code_path = file.path("graffiti", perim, folder_name, paste0(folder_name, "_code"))
 
     save_code_file = try(rstudioapi::documentSave(rstudioapi::getActiveDocumentContext()$id), silent = TRUE)
     link_used_file = try(rstudioapi::getSourceEditorContext()$path, silent = TRUE)
@@ -115,8 +114,8 @@ export_minio_graph = function (plot, folder_name,
       if(!basename(code_file) %in% c("server", "server.R", "data_update", "data_update.R")){
 
         aws.s3::s3write_using(link_used_file, FUN = file.copy,
-                              bucket = "groupe-1360", object = minio_file_code_path,
-                              opts = list("use_https" = F, "region" = ""))
+                              bucket = Sys.getenv("AWS_BUCKET"), object = minio_file_code_path,
+                              opts = list("use_https" = T, "region" = ""))
 
         print(minio_file_code_path)
       }

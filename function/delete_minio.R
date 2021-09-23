@@ -5,7 +5,7 @@ delete_minio = function (variable, perim){
     source(file_minio_credentials)
   }
   
-  data_in_DB = aws.s3::get_bucket("groupe-1360", use_https = F, region = "")
+  data_in_DB = aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
   contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
   
@@ -25,9 +25,8 @@ delete_minio = function (variable, perim){
   for(file_ in list_file){
     if(file_ %in% minio_path_selected){
      
-      aws.s3::delete_object(bucket = "groupe-1360",
                             object = file_,
-                            use_https = F,
+                            use_https = T,
                             region = "")
       
       print(sprintf("file deleted : %s", file_))

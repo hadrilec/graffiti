@@ -36,7 +36,7 @@ var_env_tbl = as_tibble(var_env)
 # print(var_env)
 # print(var_env_tbl)
 
-bucket_data = try(get_bucket("groupe-1360", use_https = F, region = ""))
+bucket_data = try(get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = ""))
 if(!"try-error" %in% class(bucket_data)){
   cat("app connected to minio", file = stderr())
 }

@@ -40,7 +40,7 @@ for(i in 1:nrow(list_R_files)){
 
   aws.s3::save_object(list_R_files[i,1],
                       file = file_dwn,
-                      bucket = "groupe-1360", use_https = F, region = "")
+                      bucket = Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
 
 }
 

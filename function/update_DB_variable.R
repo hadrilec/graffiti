@@ -9,12 +9,12 @@ update_DB_variable <- function(){
     source(file_minio_credentials)
   }
   
-  data_in_DB = aws.s3::get_bucket("groupe-1360", use_https = F, region = "")
+  data_in_DB = aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
   
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
   contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
   
-  minio_path_selected = contents_key[stringr::str_detect(contents_key, "^dataviz/")]
+  minio_path_selected = contents_key[stringr::str_detect(contents_key, "^graffiti/")]
   minio_path_selected = minio_path_selected[!stringr::str_detect(minio_path_selected, "DB_variable\\/DB_variable")]
   
   contents_key_dataviz = 
@@ -35,9 +35,9 @@ update_DB_variable <- function(){
     
     if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
       minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
-                                           bucket = "groupe-1360",
+                                           bucket = Sys.getenv("AWS_BUCKET"),
                                            object = obj_name,
-                                           opts = list("use_https" = F, "region" = "")))
+                                           opts = list("use_https" = T, "region" = "")))
       var_title <- ""
       gg_run_time <- ""
       gg_code_file <- ""
@@ -89,8 +89,8 @@ update_DB_variable <- function(){
                                 TRUE ~ as.numeric(run_time)))
   
   aws.s3::s3write_using(DB_variable, FUN = saveRDS,
-                bucket = "groupe-1360", object = "dataviz/DB_variable/DB_variable",
-                opts = list("use_https" = F, "region" = ""))
+                bucket = Sys.getenv("AWS_BUCKET"), object = "graffiti/DB_variable/DB_variable",
+                opts = list("use_https" = T, "region" = ""))
   
   return(DB_variable)
   
@@ -103,7 +103,7 @@ get_minio_all = function(){
     source(file_minio_credentials)
   }
   
-  data_in_DB = aws.s3::get_bucket("groupe-1360", use_https = F, region = "")
+  data_in_DB = aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
   
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
   contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
@@ -134,7 +134,7 @@ dwn_minio_file = function(obj){
     
     aws.s3::save_object(obj, 
                 file = file_dwn,
-                bucket = "groupe-1360", use_https = F, region = "")
+                bucket = Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
     
     print(sprintf("file downloaded : %s", file_dwn))
   }else{
