@@ -7,9 +7,9 @@ metadata:
 spec:
   tls:
   - hosts:
-  - graffiti.sspcloud.fr
+  - graffiti.lab.sspcloud.fr
 rules:
-  - host: graffiti.sspcloud.fr
+  - host: graffiti.lab.sspcloud.fr
     http:
       paths:
         - path: /
