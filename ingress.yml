@@ -10,9 +10,9 @@ spec:
   - graffiti.sspcloud.fr
 rules:
   - host: graffiti.sspcloud.fr
-  http:
-    paths:
-      - path: /
-      backend:
-        serviceName: graffiti
-        servicePort: http
+    http:
+      paths:
+        - path: /
+        backend:
+          serviceName: graffiti
+          servicePort: http
