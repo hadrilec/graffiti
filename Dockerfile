@@ -1,8 +1,6 @@
 # Dockerfile
 # Utilisation de l'image shiny "perso"
 # FROM docker-registry.beta.innovation.insee.eu/conjoncture1/image-dataviz-conj:latest
-EXPORT container=docker 
-
 FROM git-registry.lab.sspcloud.fr/hadrilec/graffiti-env:latest
 
 # Ajout de l'application
