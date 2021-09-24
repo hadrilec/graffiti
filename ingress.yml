@@ -18,4 +18,4 @@ rules:
             service: 
               name: graffiti
               port: 
-                number: {{ $svcPort }}
+                number: 80
