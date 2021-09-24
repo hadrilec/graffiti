@@ -8,14 +8,14 @@ spec:
   tls:
   - hosts:
     - graffiti.lab.sspcloud.fr
-rules:
-  - host: graffiti.lab.sspcloud.fr
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service: 
-              name: graffiti
-              port: 
-                number: 80
+  rules:
+    - host: graffiti.lab.sspcloud.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: 
+                name: graffiti
+                port: 
+                  number: 80
