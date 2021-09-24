@@ -2,5 +2,5 @@
 
 
 Application r-shiny pour visualiser des données
-https://graffiti.dev.innovation.insee.eu/
+https://graffiti.lab.sspcloud.fr
 
