@@ -96,9 +96,15 @@ update_DB_variable <- function(){
                                   TRUE ~ as.numeric(run_time)))
   }
   
-  aws.s3::s3write_using(DB_variable, FUN = saveRDS,
-                bucket = Sys.getenv("AWS_BUCKET"), object = "graffiti/DB_variable/DB_variable",
-                opts = list("use_https" = T, "region" = ""))
+  saveDB=
+  try(
+    aws.s3::s3write_using(DB_variable, FUN = saveRDS,
+                          bucket = Sys.getenv("AWS_BUCKET"), object = "graffiti/DB_variable/DB_variable",
+                          opts = list("use_https" = T, "region" = ""))
+  )
+ if("try-error" %in% class(saveDB)){
+   cat("!!! DB variable update failed !!!", file = stderr())
+ }
   
   return(DB_variable)
   
