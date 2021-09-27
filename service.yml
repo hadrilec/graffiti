@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
     - name: http
-      targetPort: 8080
+      targetPort: 3838
       port: 80
   selector:
     app: graffiti
