@@ -15,3 +15,4 @@ spec:
       containers:
         - name: graffiti
           image: git-registry.lab.sspcloud.fr/hadrilec/graffiti:latest
+          imagePullPolicy: Always
