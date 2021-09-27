@@ -1,0 +1,9 @@
+# https://github.com/InseeFrLab/cloud-scripts/tree/master/gke/validate-install
+kubectl apply -f deployment.yml
+kubectl apply -f service.yml
+kubectl apply -f ingress.yml
+kubectl get ingress
+kubectl delete ingress mario
+kubectl describe deployment graffiti
+kubectl logs graffiti-95c65c479-t88rq
+kubectl get pods

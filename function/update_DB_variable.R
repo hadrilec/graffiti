@@ -10,6 +10,7 @@ update_DB_variable <- function(){
   }
   
   data_in_DB = aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
+  print(data_in_DB)
   
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
   contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
