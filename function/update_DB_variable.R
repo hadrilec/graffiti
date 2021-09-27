@@ -34,6 +34,8 @@ update_DB_variable <- function(){
       pull(minio_path) %>% 
       as.character()
     
+    Print(obj_name)
+    
     if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
       minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
                                            bucket = Sys.getenv("AWS_BUCKET"),
