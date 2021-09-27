@@ -28,6 +28,7 @@ update_DB_variable <- function(){
   DB_variable = contents_key_dataviz
   
   for(row_id in 1:nrow(contents_key_dataviz)){
+    print(row_id)
     
     obj_name = contents_key_dataviz %>% 
       slice(row_id) %>% 
@@ -36,7 +37,7 @@ update_DB_variable <- function(){
     
     Print(obj_name)
     
-    if(length(obs_name)>0){
+    if(length(obj_name)>0){
       if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
         minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
                                              bucket = Sys.getenv("AWS_BUCKET"),
