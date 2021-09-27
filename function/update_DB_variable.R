@@ -9,8 +9,8 @@ update_DB_variable <- function(){
     source(file_minio_credentials)
   }
   
-  data_in_DB = aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = "")
-  Print(data_in_DB)
+  data_in_DB = list(aws.s3::get_bucket(Sys.getenv("AWS_BUCKET"), use_https = T, region = ""))
+  # Print(data_in_DB)
   
   dataf = do.call(c, unlist(data_in_DB, recursive = FALSE))
   contents_key = as.character(unlist(dataf[which(names(dataf) == "Contents.Key")]))
