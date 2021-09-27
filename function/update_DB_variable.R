@@ -28,7 +28,7 @@ update_DB_variable <- function(){
   DB_variable = contents_key_dataviz
   
   for(row_id in 1:nrow(contents_key_dataviz)){
-    print(row_id)
+    # print(row_id)
     
     obj_name = contents_key_dataviz %>% 
       slice(row_id) %>% 
@@ -89,10 +89,12 @@ update_DB_variable <- function(){
     }
   }
   
-  DB_variable = DB_variable %>%
-    filter(!is.na(title)) %>% 
-    mutate(run_time = case_when(is.na(run_time) ~ 0, 
-                                TRUE ~ as.numeric(run_time)))
+  if(all(c("title", "run_time") %in% colnames(DB_variable))){
+    DB_variable = DB_variable %>%
+      filter(!is.na(title)) %>% 
+      mutate(run_time = case_when(is.na(run_time) ~ 0, 
+                                  TRUE ~ as.numeric(run_time)))
+  }
   
   aws.s3::s3write_using(DB_variable, FUN = saveRDS,
                 bucket = Sys.getenv("AWS_BUCKET"), object = "graffiti/DB_variable/DB_variable",
