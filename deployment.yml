@@ -13,6 +13,6 @@ spec:
         app: graffiti
     spec:
       containers:
-        - name: graffiti
-          image: git-registry.lab.sspcloud.fr/hadrilec/graffiti:latest
+        - name: utilise-image-privee
+          image: $NOM_IMAGE_PRIVEE
           imagePullPolicy: Always
