@@ -36,49 +36,51 @@ update_DB_variable <- function(){
     
     Print(obj_name)
     
-    if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
-      minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
-                                           bucket = Sys.getenv("AWS_BUCKET"),
-                                           object = obj_name,
-                                           opts = list("use_https" = T, "region" = "")))
-      var_title <- ""
-      gg_run_time <- ""
-      gg_code_file <- ""
-      
-      if(!"try-error" %in% class(minio_obj)){
+    if(length(obs_name)>0){
+      if(stringr::str_detect(obj_name, "_gg_plot$|_png_title$|_jpg_title$")){
+        minio_obj = try(aws.s3::s3read_using(FUN = readRDS,
+                                             bucket = Sys.getenv("AWS_BUCKET"),
+                                             object = obj_name,
+                                             opts = list("use_https" = T, "region" = "")))
+        var_title <- ""
+        gg_run_time <- ""
+        gg_code_file <- ""
         
-        if("ggplot" %in% class(minio_obj) | "highchart" %in% class(minio_obj)){
-          gg = minio_obj
-          gg_run_time <- gg$run_time
+        if(!"try-error" %in% class(minio_obj)){
           
-          if(is.null(gg_run_time)){gg_run_time <- ""}
-          
-          gg_code_file <- gg$link_code_file
-          if(is.null(gg_code_file)){gg_code_file <- ""}
-          
-          if("ggplot" %in% class(gg)){
-            var_title = gg$labels$title
+          if("ggplot" %in% class(minio_obj) | "highchart" %in% class(minio_obj)){
+            gg = minio_obj
+            gg_run_time <- gg$run_time
+            
+            if(is.null(gg_run_time)){gg_run_time <- ""}
+            
+            gg_code_file <- gg$link_code_file
+            if(is.null(gg_code_file)){gg_code_file <- ""}
+            
+            if("ggplot" %in% class(gg)){
+              var_title = gg$labels$title
+            }
+            
+            if("highchart" %in% class(gg)){
+              var_title = gg[["x"]][["hc_opts"]][["title"]][["text"]]
+            }
+            
+            if(is.null(var_title)){
+              var_title = ""
+            }
+            DB_variable[row_id, "title"] = var_title
+            DB_variable[row_id, "run_time"] = as.numeric(as.character(gg_run_time))
+            DB_variable[row_id, "file"] = as.character(gg_code_file)
           }
           
-          if("highchart" %in% class(gg)){
-            var_title = gg[["x"]][["hc_opts"]][["title"]][["text"]]
-          }
-          
-          if(is.null(var_title)){
-            var_title = ""
-          }
-          DB_variable[row_id, "title"] = var_title
-          DB_variable[row_id, "run_time"] = as.numeric(as.character(gg_run_time))
-          DB_variable[row_id, "file"] = as.character(gg_code_file)
-        }
-        
-        if(stringr::str_detect(obj_name, "_png_title$|_jpg_title$")){
-          if("data.frame" %in% class(minio_obj)){
-            row_id_targeted = which(DB_variable[, "minio_path"] == gsub("_title", "", obj_name))
-            if(length(row_id_targeted) > 0){
-              DB_variable[row_id_targeted, "title"] = as.character(minio_obj[1,"title"])
-              DB_variable[row_id_targeted, "run_time"] = 0
-              DB_variable[row_id_targeted, "file"] = ""
+          if(stringr::str_detect(obj_name, "_png_title$|_jpg_title$")){
+            if("data.frame" %in% class(minio_obj)){
+              row_id_targeted = which(DB_variable[, "minio_path"] == gsub("_title", "", obj_name))
+              if(length(row_id_targeted) > 0){
+                DB_variable[row_id_targeted, "title"] = as.character(minio_obj[1,"title"])
+                DB_variable[row_id_targeted, "run_time"] = 0
+                DB_variable[row_id_targeted, "file"] = ""
+              }
             }
           }
         }
