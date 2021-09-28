@@ -19,6 +19,17 @@ source("./function/readSDMX2.R")
 source("./function/add_style.R")
 source("./function/gg_plotly.R")
 
+main_folder = rappdirs::user_data_dir()
+insee_main_folder = file.path(main_folder, "insee")
+insee_folder = file.path(insee_main_folder, "insee")
+
+list_folders = c(main_folder, insee_main_folder, insee_folder)
+for(f in list_folders){
+  if (!file.exists(f)){
+    dir.create(f)
+  }
+}
+
 # idbank_list_title_file = "./data/idbank_list_title.RData"
 # idbank_list_title = readRDS(idbank_list_title_file)
 
