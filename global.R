@@ -32,6 +32,7 @@ for(f in list_folders){
     print(sprintf("folder exists : %s", f))
   }
 }
+stop("test")
 
 # idbank_list_title_file = "./data/idbank_list_title.RData"
 # idbank_list_title = readRDS(idbank_list_title_file)
