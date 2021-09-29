@@ -1,5 +1,7 @@
 link_app =  "C:/Users/XLAPDO/Desktop/app/dataviz_conj"
 
+options(warn = -1)
+
 if(file.exists(link_app)){
   setwd(link_app)
 }
