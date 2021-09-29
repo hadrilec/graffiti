@@ -27,9 +27,9 @@ list_folders = c(main_folder, insee_main_folder, insee_folder)
 for(f in list_folders){
   if (!file.exists(f)){
     dir.create(f)
-    print(sprintf("folder creation : %s", f))
+    cat(sprintf("folder creation : %s", f), file = stderr())
   }else{
-    print(sprintf("folder exists : %s", f))
+    cat(sprintf("folder exists : %s", f), file = stderr())
   }
 }
 stop("test")
