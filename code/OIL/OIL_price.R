@@ -33,7 +33,7 @@ oil = oil %>%
   mutate(currency = "dollar")
 
 link = 'https://api.db.nomics.world/v22/series/BDF/EXR/EXR.D.USD.EUR.SP00.A?observations=1'
-eur_usd <- rdbnomics::rdb_by_api_link(link) %>%
+eur_usd <- rdbnomics::rdb(link) %>%
   mutate(type = "Dollar américain", label = "DOLLAR / EURO") %>%
   drop_na() %>% 
   mutate(eur_dollar = 1/value) %>% 
@@ -149,7 +149,7 @@ runtime_end = Sys.time()
 run_time = as.numeric(difftime(runtime_end, runtime_start), units = "secs")
 
 
-export_minio_graph(graph_oil, perim = "OIL", run_time = run_time,
-             # create_code_html = TRUE,
-             folder_name = "OIL_price", update = F)
+# export_minio_graph(graph_oil, perim = "OIL", run_time = run_time,
+#              # create_code_html = TRUE,
+#              folder_name = "OIL_price", update = F)
 
