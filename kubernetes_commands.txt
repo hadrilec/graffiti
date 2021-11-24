@@ -7,8 +7,7 @@ kubectl delete ingress mario
 kubectl describe deployment graffiti
 kubectl logs graffiti-95c65c479-t88rq
 kubectl get pods
-
-#deployment env>>
+# deployment env>>
 #    spec:
 #      containers:
 #        - name: graffiti
