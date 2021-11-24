@@ -14,6 +14,11 @@ Print = function(x){
 
 Sys.unsetenv("AWS_SESSION_TOKEN")
 
+Print(Sys.getenv("AWS_ACCESS_KEY_ID"))
+Print(Sys.getenv("AWS_S3_ENDPOINT"))
+
+# stop("test")
+
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/update_DB_variable.R")
