@@ -8,21 +8,20 @@ kubectl describe deployment graffiti
 kubectl logs graffiti-95c65c479-t88rq
 kubectl get pods
 
-deployment env>>
-
-    spec:
-      containers:
-        - name: graffiti
-          image: git-registry.lab.sspcloud.fr/hadrilec/graffiti:latest
-          imagePullPolicy: Always
-          env:
-            - name: AWS_BUCKET
-              value: "blabla"
-            - name: AWS_ACCESS_KEY_ID
-              value: "blabla"
-            - name: AWS_SECRET_ACCESS_KEY
-              value: "blabla"
-            - name: AWS_S3_ENDPOINT
-              value: "blabla"
-          envFrom:
-            secrettref: monsecret
+#deployment env>>
+#    spec:
+#      containers:
+#        - name: graffiti
+#          image: git-registry.lab.sspcloud.fr/hadrilec/graffiti:latest
+#         imagePullPolicy: Always
+#          env:
+#            - name: AWS_BUCKET
+#              value: "blabla"
+#            - name: AWS_ACCESS_KEY_ID
+#              value: "blabla"
+#            - name: AWS_SECRET_ACCESS_KEY
+#             value: "blabla"
+#            - name: AWS_S3_ENDPOINT
+#              value: "blabla"
+#          envFrom:
+#            secrettref: monsecret
