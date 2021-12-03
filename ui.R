@@ -1,11 +1,9 @@
 
 
 shinyUI(
-  dashboardPagePlus(
-    enable_preloader = F,
-    dashboardHeaderPlus(
-      # titlePanel(title=div(img(src="graffiti.PNG"), "")),
-      # title = "Graffiti",
+  dashboardPage(
+    dashboardHeader(
+      
       title = div(img(src="graffiti.PNG", width="70%"), ""),
                         titleWidth = 285,
                         enable_rightsidebar = FALSE,
