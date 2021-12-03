@@ -3,10 +3,13 @@ pkg = installed.packages()
 
 library(shiny)
 library(shinydashboard)
+# devtools::install_version("shinydashboardPlus", version="0.7.5")
 library(shinydashboardPlus)
 library(shinyWidgets)
 library(shinyjs)
+# devtools::install_github('tutuchan/shinyflags')
 library(shinyflags)
+
 # library(shinycssloaders)
 # library(rhandsontable)
 library(aws.s3)

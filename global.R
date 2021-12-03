@@ -12,6 +12,8 @@ Print = function(x){
   cat(file = stderr(), obj_name, ":", x, "\n")
 }
 
+Sys.unsetenv("AWS_SESSION_TOKEN")
+
 source("./function/librairies.R")
 source("./function/api_key.R")
 source("./function/update_DB_variable.R")
