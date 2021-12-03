@@ -981,7 +981,9 @@ shinyServer(function(input, output, session) {
       
       
       idbank_list_from_dataset =
-        insee::get_idbank_list(dataset_selected_name) %>%
+        # insee::get_idbank_list(dataset_selected_name) %>%
+        id %>% 
+        filter(nomflow == dataset_selected_name) %>% 
         pull(idbank)
       
       updateSelectizeInput(session, 'idbank_picker',
@@ -990,7 +992,9 @@ shinyServer(function(input, output, session) {
       
       
       idbank_list_selected =
-        insee::get_idbank_list(dataset_selected_name) %>% 
+        # insee::get_idbank_list(dataset_selected_name) %>% 
+        id %>% 
+        filter(nomflow == dataset_selected_name) %>% 
         insee::clean_table()
       
       id_fr_short = id_fr %>%

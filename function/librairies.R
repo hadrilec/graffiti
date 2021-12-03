@@ -3,7 +3,7 @@ pkg = installed.packages()
 
 library(shiny)
 library(shinydashboard)
-# devtools::install_version("shinydashboardPlus", version="0.7.5")
+# devtools::install_version("shinydashboardPlus", version="0.7.5", repos = "http://cran.us.r-project.org")
 library(shinydashboardPlus)
 library(shinyWidgets)
 library(shinyjs)
