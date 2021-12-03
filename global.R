@@ -151,7 +151,7 @@ if("insee" %in% pkg[1,]){
 
 id = insee:::idbank_list_internal
 
-idbank_list = insee::get_idbank_list()
+# idbank_list = insee::get_idbank_list()
 idbank_list_all = id$idbank
 
 id_fr = id %>%
@@ -164,7 +164,7 @@ dataset_list = insee::get_dataset_list()
 
 dataset_list_selectize =
   dataset_list %>%
-  dplyr::filter(id %in% unique(idbank_list$nomflow))
+  dplyr::filter(id %in% unique(id$nomflow))
 
 dataset_list_id = dataset_list_selectize$id
 
